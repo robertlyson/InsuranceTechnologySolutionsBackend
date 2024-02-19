@@ -8,7 +8,6 @@ namespace Claims.Controllers
     [Route("[controller]")]
     public class ClaimsController : ControllerBase
     {
-        
         private readonly ILogger<ClaimsController> _logger;
         private readonly CosmosDbService _cosmosDbService;
         private readonly Auditer _auditer;
