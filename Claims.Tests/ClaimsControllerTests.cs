@@ -12,7 +12,7 @@ namespace Claims.Tests
                 .WithWebHostBuilder(_ =>
                 {});
 
-            var client = application.CreateClient();
+            using var client = application.CreateClient();
 
             var response = await client.GetAsync("/Claims");
 
