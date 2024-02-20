@@ -33,6 +33,10 @@ Note: To get this template working, you need to install the Azure Cosmos DB emul
 
 [Azure Cosmos DB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator?tabs=ssl-netstd21)
 
+Export Azure Cosmos DB Emulator crt with
+
+```curl -k https://localhost:8081/_explorer/emulator.pem > ~/emulatorcert.crt```
+
 ### Task 1
 The codebase is messy:
 * The controller has too much responsibility. 

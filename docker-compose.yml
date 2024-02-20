@@ -8,3 +8,7 @@ services:
       SA_PASSWORD: "Password1"
     ports:
       - 1433:1433
+  azure-cosmosdb:
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator
+    ports:
+      - 8081:8081
