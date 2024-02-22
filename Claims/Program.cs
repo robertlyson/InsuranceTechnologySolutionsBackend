@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using Claims;
 using Claims.Auditing;
 using Claims.Controllers;
+using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -53,7 +54,7 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigur
     var containerName = configurationSection.GetSection("ContainerName").Value;
     var account = configurationSection.GetSection("Account").Value;
     var key = configurationSection.GetSection("Key").Value;
-    var client = new Microsoft.Azure.Cosmos.CosmosClient(account, key);
+    var client = new CosmosClient(account, key);
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");

@@ -1,16 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
-using Xunit;
+﻿using System.Net.Mime;
+using NUnit.Framework;
 
 namespace Claims.Tests
 {
-    public class ClaimsControllerTests
+    public class Tmp
     {
-        [Fact]
+        [Test]
+        public void One()
+        {
+            
+        }
+    }
+    
+    public class ClaimsControllerTests : ApplicationFixture
+    {
+        [Test]
         public async Task Get_Claims()
         {
-            var application = new WebApplicationFactory<Program>()
-                .WithWebHostBuilder(_ =>
-                {});
+            var application = base.Factory!;
 
             using var client = application.CreateClient();
 

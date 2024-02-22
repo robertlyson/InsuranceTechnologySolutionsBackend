@@ -16,7 +16,7 @@ public class CoversController : ControllerBase
     {
         _logger = logger;
         _auditer = new Auditer(auditContext);
-        _container = cosmosClient?.GetContainer("ClaimDb", "Cover")
+        _container = cosmosClient.GetContainer("ClaimDb", "Cover")
                      ?? throw new ArgumentNullException(nameof(cosmosClient));
     }
     
