@@ -1,4 +1,5 @@
 using Claims.Auditing;
+using Claims.Controllers.Claims.Dto;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Claims.Controllers.Claims

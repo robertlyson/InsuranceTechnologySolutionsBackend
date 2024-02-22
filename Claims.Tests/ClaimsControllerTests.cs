@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Claims.Controllers.Claims.Dto;
 using NUnit.Framework;
 using VerifyTests;
 

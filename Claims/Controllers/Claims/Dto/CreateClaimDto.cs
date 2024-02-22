@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 
-namespace Claims;
+namespace Claims.Controllers.Claims.Dto;
 
 public class CreateClaimDto
 {
