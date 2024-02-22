@@ -1,8 +1,9 @@
 using Claims.Auditing;
+using Claims.Controllers.Covers.Dto;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 
-namespace Claims.Controllers;
+namespace Claims.Controllers.Covers;
 
 [ApiController]
 [Route("[controller]")]
@@ -21,7 +22,7 @@ public class CoversController : ControllerBase
     }
     
     [HttpPost("/premium")]
-    public async Task<ActionResult> ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
+    public ActionResult ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
     {
         return Ok(ComputePremium(startDate, endDate, coverType));
     }
@@ -47,7 +48,7 @@ public class CoversController : ControllerBase
         try
         {
             var response = await _container.ReadItemAsync<Cover>(id, new (id));
-            return Ok(response.Resource);
+            return Ok(ToDto(response.Resource));
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -104,5 +105,17 @@ public class CoversController : ControllerBase
         }
 
         return totalPremium;
+    }
+
+    private CoverDto ToDto(Cover cover)
+    {
+        return new CoverDto
+        {
+            Id = cover.Id,
+            StartDate = cover.StartDate,
+            EndDate = cover.EndDate,
+            CoverType = cover.Type,
+            Premium = cover.Premium,
+        };
     }
 }

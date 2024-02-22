@@ -4,7 +4,6 @@ namespace Claims.Controllers.Claims.Dto;
 
 public class ClaimDto
 {
-    [JsonRequired]
     public Guid Id { get; set; }
     [JsonRequired]
     public Guid CoverId { get; set; }
