@@ -72,8 +72,7 @@ app.Run();
 static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
 {
     var databaseName = configurationSection.GetSection("DatabaseName").Value;
-    var containerName1 = configurationSection.GetSection("ContainerName1").Value;
-    var containerName2 = configurationSection.GetSection("ContainerName2").Value;
+    var containerName1 = configurationSection.GetSection("ContainerName").Value;
 
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName1);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
