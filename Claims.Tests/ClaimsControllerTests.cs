@@ -30,13 +30,12 @@ namespace Claims.Tests
 
             using var client = application.CreateClient();
 
-            var payload = new Claim
+            var payload = new CreateClaimDto
             {
-                Id = Guid.NewGuid().ToString(),
-                CoverId = Guid.NewGuid().ToString(), 
+                CoverId = Guid.NewGuid(), 
                 Created = DateTime.UtcNow, 
                 Name = "EF3EB3FE-8083-4572-B995-7EAF16F5EC70",
-                Type = ClaimType.Fire, 
+                ClaimType = ClaimType.Fire, 
                 DamageCost = decimal.One
             };
             var createResponse = await client.PostAsJsonAsync("/claims", payload);
@@ -52,13 +51,12 @@ namespace Claims.Tests
 
             using var client = application.CreateClient();
 
-            var payload = new Claim
+            var payload = new CreateClaimDto
             {
-                Id = Guid.NewGuid().ToString(),
-                CoverId = Guid.NewGuid().ToString(), 
+                CoverId = Guid.NewGuid(), 
                 Created = DateTime.UtcNow, 
                 Name = "2F2743A9-0D5E-45F1-8134-39487EC6CFE6",
-                Type = ClaimType.Fire, 
+                ClaimType = ClaimType.Fire, 
                 DamageCost = decimal.One
             };
             var createResponse = await client.PostAsJsonAsync("/claims", payload);
@@ -67,6 +65,21 @@ namespace Claims.Tests
             var deleteResponse = await client.DeleteAsync($"/claims/{createdClaim!.Id}");
 
             await Verify(new[] { createResponse, getResponse, deleteResponse });
+        }
+
+        [Test]
+        public async Task ValidateClaimsPost()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+
+            var payload = new CreateClaimDto
+            {
+            };
+            var createResponse = await client.PostAsJsonAsync("/claims", payload);
+
+            await Verify(createResponse);
         }
 
         private static JsonSerializerOptions SerializerOptions()

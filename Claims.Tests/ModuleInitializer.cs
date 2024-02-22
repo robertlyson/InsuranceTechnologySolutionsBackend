@@ -16,6 +16,8 @@ public class ModuleInitializer
             "X-Amzn-Trace-Id",
             "origin");
         VerifierSettings
+            .ScrubInlineGuids();
+        VerifierSettings
             .ScrubLinesContaining("Traceparent", "X-Amzn-Trace-Id", "Content-Length");
     }
 }

@@ -1,0 +1,42 @@
+﻿{
+  Version: 1.1,
+  Status: 400 Bad Request,
+  Content: {
+    Headers: {
+      Content-Type: application/problem+json; charset=utf-8
+    },
+    Value: {
+      type: https://tools.ietf.org/html/rfc7231#section-6.5.1,
+      title: One or more validation errors occurred.,
+      status: 400,
+      traceId: 00-10e213773f46261f09aaec72eeb0dcca-359ff0b84fce5713-00,
+      errors: {
+        Name: [
+          The Name field is required.
+        ],
+        CoverId: [
+          The CoverId field is required.
+        ],
+        Created: [
+          The Created field is required.
+        ],
+        ClaimType: [
+          The ClaimType field is required.
+        ],
+        DamageCost: [
+          The DamageCost field is required.
+        ]
+      }
+    }
+  },
+  Request: {
+    Method: POST,
+    Uri: http://localhost/claims,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: 
+    }
+  }
+}

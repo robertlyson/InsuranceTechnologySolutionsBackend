@@ -21,7 +21,6 @@ namespace Claims
 
         [JsonPropertyName("damageCost")]
         public decimal DamageCost { get; set; }
-
     }
 
     public enum ClaimType

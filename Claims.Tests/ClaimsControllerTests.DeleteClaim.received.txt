@@ -42,7 +42,7 @@
         damageCost: 1
       }
     },
-    Request: http://localhost/claims/7d17d27b-b08f-4e7d-859a-017bb2f0ebb8
+    Request: http://localhost/claims/Guid_1
   },
   {
     Version: 1.1,
@@ -52,7 +52,7 @@
     },
     Request: {
       Method: DELETE,
-      Uri: http://localhost/claims/7d17d27b-b08f-4e7d-859a-017bb2f0ebb8
+      Uri: http://localhost/claims/Guid_1
     }
   }
 ]

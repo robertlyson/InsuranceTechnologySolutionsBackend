@@ -25,12 +25,29 @@ namespace Claims.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync(Claim claim)
+        public async Task<ActionResult> CreateAsync(CreateClaimDto claim)
         {
-            claim.Id = Guid.NewGuid().ToString();
-            await _cosmosDbService.AddItemAsync(claim);
-            _auditer.AuditClaim(claim.Id, "POST");
-            return Ok(claim);
+            var id = Guid.NewGuid();
+            var item = new Claim
+            {
+                Id = id.ToString(),
+                Name = claim.Name!,
+                Type = claim.ClaimType!.Value,
+                CoverId = claim.CoverId!.Value.ToString(),
+                Created = claim.Created!.Value,
+                DamageCost = claim.DamageCost!.Value
+            };
+            await _cosmosDbService.AddItemAsync(item);
+            _auditer.AuditClaim(item.Id, "POST");
+            return Ok(new ClaimDto
+            {
+                Id = id,
+                CoverId = claim.CoverId!.Value,
+                ClaimType = claim.ClaimType!.Value,
+                Created = claim.Created!.Value,
+                DamageCost = claim.DamageCost!.Value,
+                Name = claim.Name!
+            });
         }
 
         [HttpDelete("{id}")]
