@@ -3,16 +3,8 @@ using NUnit.Framework;
 
 namespace Claims.Tests
 {
-    public class Tmp
-    {
-        [Test]
-        public void One()
-        {
-            
-        }
-    }
-    
-    public class ClaimsControllerTests : ApplicationFixture
+    [TestFixture]
+    public class ClaimsControllerTests : BaseTest
     {
         [Test]
         public async Task Get_Claims()
