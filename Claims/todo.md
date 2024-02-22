@@ -14,3 +14,4 @@
 - extend get with filters
 - logging
 - deploy to Azure
+- get rid of warnings
