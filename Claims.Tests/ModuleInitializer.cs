@@ -14,6 +14,7 @@ public class ModuleInitializer
             "traceparent",
             "Traceparent",
             "X-Amzn-Trace-Id",
+            "traceId",
             "origin");
         VerifierSettings
             .ScrubInlineGuids();

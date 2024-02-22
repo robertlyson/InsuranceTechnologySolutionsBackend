@@ -1,7 +1,7 @@
 using Claims.Auditing;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Claims.Controllers
+namespace Claims.Controllers.Claims
 {
     [ApiController]
     [Route("[controller]")]
