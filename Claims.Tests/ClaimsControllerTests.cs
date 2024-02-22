@@ -82,10 +82,5 @@ namespace Claims.Tests
 
             await Verify(createResponse);
         }
-
-        private static JsonSerializerOptions SerializerOptions()
-        {
-            return new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() }};
-        }
     }
 }

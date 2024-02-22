@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
@@ -49,5 +51,10 @@ public class BaseTest
         {
             throw new Exception("Make sure Azure Cosmos DB emulator is working");
         }
+    }
+
+    protected static JsonSerializerOptions SerializerOptions()
+    {
+        return new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() }};
     }
 }

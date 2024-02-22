@@ -10,6 +10,7 @@
 - problem details handling
 - task 3 / outbox 
 - task 5
+- refactor builder.Configuration.GetSection("CosmosDb") with IOptions
 
 - extend get with filters
 - logging

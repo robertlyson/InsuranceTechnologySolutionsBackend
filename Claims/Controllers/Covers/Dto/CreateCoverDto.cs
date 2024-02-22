@@ -12,7 +12,4 @@ public class CreateCoverDto
     
     [Required] 
     public CoverType CoverType { get; set; }
-
-    [Required] 
-    public decimal Premium { get; set; }
 }

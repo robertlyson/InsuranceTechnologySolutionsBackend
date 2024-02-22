@@ -17,8 +17,28 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     }
 );
 
-builder.Services.AddSingleton(
-    InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+builder.Services.AddSingleton(_ =>
+{
+    var section = builder.Configuration.GetSection("CosmosDb");
+
+    var account = section.GetSection("Account").Value;
+    var key = section.GetSection("Key").Value;
+    
+    JsonSerializerOptions options = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        WriteIndented = true,
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+
+    var client = new CosmosClient(account, key,
+        new CosmosClientOptions { Serializer = new CosmosSystemTextJsonSerializer(options) });
+
+    return client;
+});
+builder.Services.AddSingleton(provider =>
+    InitializeCosmosClientInstanceAsync(provider.GetRequiredService<CosmosClient>(), builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
 
 builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -49,26 +69,15 @@ using (var scope = app.Services.CreateScope())
 
 app.Run();
 
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigurationSection configurationSection)
+static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
 {
     var databaseName = configurationSection.GetSection("DatabaseName").Value;
-    var containerName = configurationSection.GetSection("ContainerName").Value;
-    var account = configurationSection.GetSection("Account").Value;
-    var key = configurationSection.GetSection("Key").Value;
-    
-    JsonSerializerOptions options = new()
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-        WriteIndented = true,
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
+    var containerName1 = configurationSection.GetSection("ContainerName1").Value;
+    var containerName2 = configurationSection.GetSection("ContainerName2").Value;
 
-    var client = new CosmosClient(account, key,
-        new CosmosClientOptions { Serializer = new CosmosSystemTextJsonSerializer(options) });
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
+    var cosmosDbService = new CosmosDbService(client, databaseName, containerName1);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");
+    var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName1, "/id");
 
     return cosmosDbService;
 }
