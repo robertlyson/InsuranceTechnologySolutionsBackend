@@ -7,6 +7,7 @@
 - domain model
 - repositories
 - problem details handling
+- extend get with filters
 - outbox 
 - logging
 - deploy to Azure
