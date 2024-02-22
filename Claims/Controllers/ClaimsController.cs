@@ -19,9 +19,10 @@ namespace Claims.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<Claim>> GetAsync()
+        public async Task<IEnumerable<ClaimDto>> GetAsync()
         {
-            return _cosmosDbService.GetClaimsAsync();
+            var claims = await _cosmosDbService.GetClaimsAsync();
+            return claims.Select(ToDto);
         }
 
         [HttpPost]
@@ -39,15 +40,7 @@ namespace Claims.Controllers
             };
             await _cosmosDbService.AddItemAsync(item);
             _auditer.AuditClaim(item.Id, "POST");
-            return Ok(new ClaimDto
-            {
-                Id = id,
-                CoverId = claim.CoverId!.Value,
-                ClaimType = claim.ClaimType!.Value,
-                Created = claim.Created!.Value,
-                DamageCost = claim.DamageCost!.Value,
-                Name = claim.Name!
-            });
+            return Ok(ToDto(item));
         }
 
         [HttpDelete("{id}")]
@@ -61,6 +54,19 @@ namespace Claims.Controllers
         public Task<Claim> GetAsync(string id)
         {
             return _cosmosDbService.GetClaimAsync(id);
+        }
+
+        private static ClaimDto ToDto(Claim item)
+        {
+            return new ClaimDto
+            {
+                Id = Guid.Parse(item.Id),
+                CoverId = Guid.Parse(item.CoverId),
+                ClaimType = item.Type,
+                Created = item.Created,
+                DamageCost = item.DamageCost,
+                Name = item.Name
+            };
         }
     }
 }

@@ -1,1 +1,58 @@
-﻿
+﻿[
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        id: Guid_1,
+        coverId: Guid_2,
+        created: DateTimeOffset_1,
+        name: Guid_3,
+        claimType: Fire,
+        damageCost: 1
+      }
+    },
+    Request: {
+      Method: POST,
+      Uri: http://localhost/claims,
+      Content: {
+        Headers: {
+          Content-Type: application/json; charset=utf-8
+        },
+        Value: 
+      }
+    }
+  },
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        id: Guid_1,
+        coverId: Guid_2,
+        created: DateTimeOffset_1,
+        name: Guid_3,
+        claimType: Fire,
+        damageCost: 1
+      }
+    },
+    Request: http://localhost/claims/Guid_1
+  },
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {}
+    },
+    Request: {
+      Method: DELETE,
+      Uri: http://localhost/claims/Guid_1
+    }
+  }
+]

@@ -14,5 +14,5 @@
       damageCost: 1
     }
   },
-  Request: http://localhost/claims/afacf1ef-b093-401f-abac-3258c4812d80
+  Request: http://localhost/claims/Guid_1
 }
