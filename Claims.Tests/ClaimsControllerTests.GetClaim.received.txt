@@ -1,0 +1,18 @@
+﻿{
+  Version: 1.1,
+  Status: 200 OK,
+  Content: {
+    Headers: {
+      Content-Type: application/json; charset=utf-8
+    },
+    Value: {
+      id: Guid_1,
+      coverId: Guid_2,
+      created: DateTimeOffset_1,
+      name: Guid_3,
+      claimType: Fire,
+      damageCost: 1
+    }
+  },
+  Request: http://localhost/claims/afacf1ef-b093-401f-abac-3258c4812d80
+}

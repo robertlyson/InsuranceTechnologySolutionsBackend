@@ -1,8 +1,10 @@
 ﻿using System.Net;
+using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using NUnit.Framework;
 using Testcontainers.MsSql;
+using VerifyTests.Http;
 
 namespace Claims.Tests;
 
@@ -38,8 +40,10 @@ public class BaseTest
     private async Task ValidateCosmosDb()
     {
         //validate if azure cosmos db is running
-        using var httpClient = Factory!.CreateClient();
-        var response = await httpClient.GetAsync("https://localhost:8081/_explorer/index.html");
+        using var httpClient = new HttpClient();
+        httpClient.Timeout = TimeSpan.FromSeconds(5);
+        httpClient.BaseAddress = new Uri("https://localhost:8081");
+        var response = await httpClient.GetAsync("/_explorer/index.html");
 
         if (response.StatusCode != HttpStatusCode.OK)
         {

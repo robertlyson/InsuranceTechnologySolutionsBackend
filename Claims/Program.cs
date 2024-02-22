@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Claims;
 using Claims.Auditing;
@@ -54,7 +55,17 @@ static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(IConfigur
     var containerName = configurationSection.GetSection("ContainerName").Value;
     var account = configurationSection.GetSection("Account").Value;
     var key = configurationSection.GetSection("Key").Value;
-    var client = new CosmosClient(account, key);
+    
+    JsonSerializerOptions options = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        WriteIndented = true,
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+
+    var client = new CosmosClient(account, key,
+        new CosmosClientOptions { Serializer = new CosmosSystemTextJsonSerializer(options) });
     var cosmosDbService = new CosmosDbService(client, databaseName, containerName);
     var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
     await database.Database.CreateContainerIfNotExistsAsync(containerName, "/id");

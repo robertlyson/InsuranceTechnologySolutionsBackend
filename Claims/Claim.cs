@@ -1,26 +1,25 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+﻿using System.Text.Json.Serialization;
 
 namespace Claims
 {
     public class Claim
     {
-        [JsonProperty(PropertyName = "id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; }
         
-        [JsonProperty(PropertyName = "coverId")]
+        [JsonPropertyName("coverId")]
         public string CoverId { get; set; }
 
-        [JsonProperty(PropertyName = "created")]
+        [JsonPropertyName("created")]
         public DateTime Created { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonProperty(PropertyName = "claimType")]
+        [JsonPropertyName("claimType")]
         public ClaimType Type { get; set; }
 
-        [JsonProperty(PropertyName = "damageCost")]
+        [JsonPropertyName("damageCost")]
         public decimal DamageCost { get; set; }
 
     }

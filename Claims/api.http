@@ -1,0 +1,16 @@
+﻿###
+
+POST https://localhost:7052/Claims
+accept: */*
+Content-Type: application/json
+
+{
+  "CoverId": "a46a770f-b76d-447e-85b1-5c4eff546472",
+  "Created": "2024-02-22T19:38:59.6179728Z",
+  "Name": "2F2743A9-0D5E-45F1-8134-39487EC6CFE6",
+  "Type": 3,
+  "DamageCost": 1
+}
+
+###
+
