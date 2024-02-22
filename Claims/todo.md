@@ -6,8 +6,11 @@
 - command / queries
 - domain model
 - repositories
+- task 2
 - problem details handling
+- task 3 / outbox 
+- task 5
+
 - extend get with filters
-- outbox 
 - logging
 - deploy to Azure
