@@ -30,7 +30,7 @@ public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, Uni
     {
         var id = request.ClaimId;
         _auditer.AuditClaim(id, "DELETE");
-        await _claimsCosmosRepository.DeleteItemAsync(id);
+        await _claimsCosmosRepository.DeleteItemAsync(id, cancellationToken);
 
         return new Unit();
     }

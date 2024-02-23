@@ -2,6 +2,7 @@ using System.Configuration;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Claims;
+using Claims.Application.Covers;
 using Claims.Auditing;
 using Claims.Controllers;
 using Claims.Infrastructure;
@@ -27,6 +28,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCosmos(builder.Configuration);
 builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddTransient<Auditer>();
+builder.Services.AddTransient<IPremiumStrategy, DefaultPremiumStrategy>();
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Claims.Application.Claims;
+using Claims.Application.Covers;
 using Microsoft.Azure.Cosmos;
 
 namespace Claims.Infrastructure;
@@ -20,19 +21,33 @@ public static class CosmosDbExtensions
 
             return client;
         });
-        serviceCollection.AddSingleton(provider =>
-            InitializeCosmosClientInstanceAsync(provider.GetRequiredService<CosmosClient>(), configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+        serviceCollection.AddSingleton<ClaimsCosmosRepository>(provider =>
+            ClaimsCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(), configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+        serviceCollection.AddSingleton<CoversCosmosRepository>(provider =>
+            CoversCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(), configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
     }
 
-    static async Task<ClaimsCosmosRepository> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
+    static async Task<ClaimsCosmosRepository> ClaimsCosmosRepositoryAsync(CosmosClient client, IConfigurationSection configurationSection)
     {
         var databaseName = configurationSection.GetSection("DatabaseName").Value;
-        var claimsContainerName = configurationSection.GetSection("ClaimContainerName").Value;
+        var claimsContainerName = configurationSection.GetSection("ClaimsContainerName").Value;
 
-        var cosmosDbService = new ClaimsCosmosRepository(client, databaseName, claimsContainerName);
+        var repository = new ClaimsCosmosRepository(client, databaseName, claimsContainerName);
         var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-        var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(claimsContainerName, "/id");
+        await database.Database.CreateContainerIfNotExistsAsync(claimsContainerName, "/id");
 
-        return cosmosDbService;
+        return repository;
+    }
+
+    static async Task<CoversCosmosRepository> CoversCosmosRepositoryAsync(CosmosClient client, IConfigurationSection configurationSection)
+    {
+        var databaseName = configurationSection.GetSection("DatabaseName").Value;
+        var coversContainerName = configurationSection.GetSection("CoversContainerName").Value;
+
+        var repository = new CoversCosmosRepository(client, databaseName, coversContainerName);
+        var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
+        await database.Database.CreateContainerIfNotExistsAsync(coversContainerName, "/id");
+
+        return repository;
     }
 }

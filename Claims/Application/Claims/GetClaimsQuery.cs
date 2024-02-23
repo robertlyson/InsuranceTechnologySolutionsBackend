@@ -21,7 +21,7 @@ public class GetClaimsQueryHandler : IRequestHandler<GetClaimsQuery, ClaimDto[]>
     
     public async Task<ClaimDto[]> Handle(GetClaimsQuery request, CancellationToken cancellationToken)
     {
-        var claims = await _claimsCosmosRepository.GetClaimsAsync();
+        var claims = await _claimsCosmosRepository.GetClaimsAsync(cancellationToken);
         return claims.Select(Mappers.ToDto).ToArray();
     }
 }

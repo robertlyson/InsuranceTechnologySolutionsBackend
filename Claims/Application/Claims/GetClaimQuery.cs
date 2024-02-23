@@ -15,7 +15,7 @@ public class GetClaimQuery : IRequest<ClaimDto?>
 }
 
 [UsedImplicitly]
-public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto>
+public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto?>
 {
     private readonly ClaimsCosmosRepository _claimsCosmosRepository;
 
@@ -27,7 +27,7 @@ public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto>
     public async Task<ClaimDto?> Handle(GetClaimQuery request, CancellationToken cancellationToken)
     {
         var id = request.Id;
-        var claim = await _claimsCosmosRepository.GetClaimAsync(id);
+        var claim = await _claimsCosmosRepository.GetClaimAsync(id, cancellationToken);
         return claim == null ? null : Mappers.ToDto(claim);
     }
 }

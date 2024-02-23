@@ -40,7 +40,7 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Cla
             Created = claim.Created!.Value,
             DamageCost = claim.DamageCost!.Value
         };
-        await _claimsCosmosRepository.AddItemAsync(item);
+        await _claimsCosmosRepository.AddItemAsync(item, cancellationToken);
         _auditer.AuditClaim(item.Id, "POST");
         return Mappers.ToDto(item);
     }

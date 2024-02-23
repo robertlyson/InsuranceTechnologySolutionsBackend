@@ -1,4 +1,4 @@
-﻿using Claims.Controllers.Covers.Dto;
+﻿using Claims.Application.Covers.Dto;
 
 namespace Claims.Application.Covers;
 
