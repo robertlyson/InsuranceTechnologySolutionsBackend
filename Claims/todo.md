@@ -8,8 +8,8 @@
 - ~~refactor builder.Configuration.GetSection("CosmosDb") with IOptions~~
 - ~~task 2~~
 - ~~domain model~~
+- ~~task 5~~
 - task 3 / outbox 
-- task 5
 - problem details handling
 
 - extend get with filters
