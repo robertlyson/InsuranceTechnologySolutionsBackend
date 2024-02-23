@@ -41,10 +41,9 @@ namespace Claims.Controllers.Claims
         }
 
         [HttpGet("{id}")]
-        public async Task<ClaimDto> GetAsync(string id)
+        public Task<ClaimDto> GetAsync(string id, CancellationToken cancellationToken = default)
         {
-            var claim = await _cosmosDbService.GetClaimAsync(id);
-            return Mappers.ToDto(claim);
+            return _mediator.Send(new GetClaimQuery(id), cancellationToken);
         }
     }
 }
