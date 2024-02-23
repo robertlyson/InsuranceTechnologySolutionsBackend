@@ -11,14 +11,10 @@ namespace Claims.Controllers.Claims
     public class ClaimsController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly CosmosDbService _cosmosDbService;
-        private readonly Auditer _auditer;
 
-        public ClaimsController(IMediator mediator, CosmosDbService cosmosDbService, AuditContext auditContext)
+        public ClaimsController(IMediator mediator)
         {
             _mediator = mediator;
-            _cosmosDbService = cosmosDbService;
-            _auditer = new Auditer(auditContext);
         }
 
         [HttpGet]
