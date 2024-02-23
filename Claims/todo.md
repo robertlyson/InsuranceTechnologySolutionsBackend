@@ -9,10 +9,10 @@
 - ~~task 2~~
 - ~~domain model~~
 - ~~task 5~~
+- ~~get rid of warnings~~
 - task 3 / outbox 
 - problem details handling
 
 - extend get with filters
 - logging
 - deploy to Azure
-- get rid of warnings
