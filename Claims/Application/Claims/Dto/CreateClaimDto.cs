@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Claims.Controllers.Claims.Dto;
+namespace Claims.Application.Claims.Dto;
 
 public class CreateClaimDto
 {

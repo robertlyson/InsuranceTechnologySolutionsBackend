@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using Claims.Controllers.Claims.Dto;
+using Claims.Application.Claims.Dto;
 
 namespace Claims.Tests
 {

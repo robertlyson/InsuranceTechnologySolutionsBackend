@@ -25,6 +25,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCosmos(builder.Configuration);
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddTransient<Auditer>();
 
 var app = builder.Build();
 

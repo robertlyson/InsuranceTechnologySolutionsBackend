@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Claims.Controllers.Claims.Dto;
+namespace Claims.Application.Claims.Dto;
 
 public class ClaimDto
 {
