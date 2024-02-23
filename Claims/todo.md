@@ -3,9 +3,9 @@
 - ~~tests with test containers~~
 - ~~tests for claims~~
 - ~~tests for covers~~
-- command / queries
+- ~~command / queries~~
+- ~~repositories~~
 - domain model
-- repositories
 - task 2
 - problem details handling
 - task 3 / outbox 
