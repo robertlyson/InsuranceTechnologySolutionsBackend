@@ -166,8 +166,8 @@ namespace Claims.Tests
             var coverPayload = new CreateCoverDto
             {
                 CoverType = CoverType.Yacht,
-                StartDate = DateOnly.FromDateTime(new DateTime(2024, 1, 1)),
-                EndDate = DateOnly.FromDateTime(new DateTime(2025, 1, 1)),
+                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)),
             };
             var createCoverResponse = await client.PostAsJsonAsync("/covers", coverPayload);
             var cover = await createCoverResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions()) ?? throw new Exception("Cover could not be created.");

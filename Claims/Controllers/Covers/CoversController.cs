@@ -47,8 +47,8 @@ public class CoversController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> CreateAsync(CreateCoverDto cover, CancellationToken cancellationToken = default)
     {
-        var created = await _mediator.Send(new CreateCoverCommand(cover), cancellationToken);
-        return Ok(created);
+        var result = await _mediator.Send(new CreateCoverCommand(cover), cancellationToken);
+        return result.IsSuccess ? Ok(result.Value) : BadRequest(result.Error.Description);
     }
 
     [HttpDelete("{id}")]

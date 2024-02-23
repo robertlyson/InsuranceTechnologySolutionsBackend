@@ -18,8 +18,8 @@ public class CoversControllerTests : BaseTest
         var payload = new CreateCoverDto
         {
             CoverType = CoverType.Yacht,
-            StartDate = DateOnly.FromDateTime(new DateTime(2020, 1, 1)),
-            EndDate = DateOnly.FromDateTime(new DateTime(2021, 1, 1)),
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+            EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)),
         };
         var createResponse = await client.PostAsJsonAsync("/covers", payload);
         var created = await createResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions());
@@ -39,8 +39,8 @@ public class CoversControllerTests : BaseTest
         var payload = new CreateCoverDto
         {
             CoverType = CoverType.Yacht,
-            StartDate = DateOnly.FromDateTime(new DateTime(2024, 1, 1)),
-            EndDate = DateOnly.FromDateTime(new DateTime(2025, 1, 1)),
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+            EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)),
         };
         var createResponse = await client.PostAsJsonAsync("/covers", payload);
         var createdCover = await createResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions());

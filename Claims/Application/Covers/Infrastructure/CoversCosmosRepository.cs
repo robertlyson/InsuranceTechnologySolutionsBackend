@@ -44,10 +44,14 @@ public class CoversCosmosRepository
     {
         var entity = new CoverCosmosEntity
         {
-
+            Id = item.Id,
+            StartDate = item.StartDate,
+            EndDate = item.EndDate,
+            Type = item.Type,
+            Premium = item.Premium
         };
         
-        return _container.CreateItemAsync(item, new PartitionKey(entity.Id.ToString()), cancellationToken: cancellationToken);
+        return _container.CreateItemAsync(entity, new PartitionKey(entity.Id.ToString()), cancellationToken: cancellationToken);
     }
 
     public Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
