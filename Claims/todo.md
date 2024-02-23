@@ -5,12 +5,12 @@
 - ~~tests for covers~~
 - ~~command / queries~~
 - ~~repositories~~
+- ~~refactor builder.Configuration.GetSection("CosmosDb") with IOptions~~
 - domain model
 - task 2
 - problem details handling
 - task 3 / outbox 
 - task 5
-- refactor builder.Configuration.GetSection("CosmosDb") with IOptions
 
 - extend get with filters
 - logging
