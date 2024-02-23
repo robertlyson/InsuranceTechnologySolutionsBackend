@@ -4,8 +4,7 @@ namespace Claims.Application.Covers;
 
 public class CoverCosmosEntity
 {
-    [JsonProperty(PropertyName = "id")]
-    public string Id { get; set; }
+    [JsonProperty(PropertyName = "id")] public string Id { get; set; } = string.Empty;
 
     [JsonProperty(PropertyName = "startDate")]
     public DateOnly StartDate { get; set; }

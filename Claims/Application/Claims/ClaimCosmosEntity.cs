@@ -4,17 +4,15 @@ namespace Claims.Application.Claims
 {
     public class ClaimCosmosEntity
     {
-        [JsonProperty(PropertyName = "id")]
-        public string Id { get; set; }
-        
+        [JsonProperty(PropertyName = "id")] public string Id { get; set; } = string.Empty;
+
         [JsonProperty(PropertyName = "coverId")]
-        public string CoverId { get; set; }
+        public string CoverId { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "created")]
         public DateTime Created { get; set; }
 
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
+        [JsonProperty(PropertyName = "name")] public string Name { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "claimType")]
         public ClaimType Type { get; set; }
