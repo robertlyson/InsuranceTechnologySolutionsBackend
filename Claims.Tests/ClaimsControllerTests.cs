@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Claims.Application.Claims;
 using Claims.Application.Claims.Dto;
 
 namespace Claims.Tests
@@ -38,6 +39,17 @@ namespace Claims.Tests
             var createResponse = await client.PostAsJsonAsync("/claims", payload);
             var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
             var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
+            await Verify(getResponse);
+        }
+
+        [Test]
+        public async Task GetNonExistingClaim()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+            
+            var getResponse = await client.GetAsync("/claims/non_existing");
             await Verify(getResponse);
         }
 

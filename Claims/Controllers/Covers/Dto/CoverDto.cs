@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Claims.Application.Covers;
 
 namespace Claims.Controllers.Covers.Dto;
 

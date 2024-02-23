@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Claims.Application.Claims;
 
-public class GetClaimQuery : IRequest<ClaimDto>
+public class GetClaimQuery : IRequest<ClaimDto?>
 {
     public string Id { get; }
 
@@ -24,10 +24,10 @@ public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto>
         _cosmosDbService = cosmosDbService;
     }
     
-    public async Task<ClaimDto> Handle(GetClaimQuery request, CancellationToken cancellationToken)
+    public async Task<ClaimDto?> Handle(GetClaimQuery request, CancellationToken cancellationToken)
     {
         var id = request.Id;
         var claim = await _cosmosDbService.GetClaimAsync(id);
-        return Mappers.ToDto(claim);
+        return claim == null ? null : Mappers.ToDto(claim);
     }
 }

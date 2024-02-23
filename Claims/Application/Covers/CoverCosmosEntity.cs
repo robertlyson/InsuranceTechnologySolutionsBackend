@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace Claims;
+namespace Claims.Application.Covers;
 
-public class Cover
+public class CoverCosmosEntity
 {
     [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
@@ -18,13 +18,4 @@ public class Cover
 
     [JsonProperty(PropertyName = "premium")]
     public decimal Premium { get; set; }
-}
-
-public enum CoverType
-{
-    Yacht = 0,
-    PassengerShip = 1,
-    ContainerShip = 2,
-    BulkCarrier = 3,
-    Tanker = 4
 }

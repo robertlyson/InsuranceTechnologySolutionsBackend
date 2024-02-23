@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Claims.Application.Covers;
 
 namespace Claims.Controllers.Covers.Dto;
 

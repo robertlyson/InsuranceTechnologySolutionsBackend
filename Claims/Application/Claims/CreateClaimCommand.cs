@@ -31,7 +31,7 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Cla
     {
         var claim = request.Claim;
         var id = Guid.NewGuid();
-        var item = new Claim
+        var item = new ClaimCosmosEntity
         {
             Id = id.ToString(),
             Name = claim.Name!,

@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace Claims
+namespace Claims.Application.Claims
 {
-    public class Claim
+    public class ClaimCosmosEntity
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
@@ -22,13 +22,5 @@ namespace Claims
         [JsonProperty(PropertyName = "damageCost")]
         public decimal DamageCost { get; set; }
 
-    }
-
-    public enum ClaimType
-    {
-        Collision = 0,
-        Grounding = 1,
-        BadWeather = 2,
-        Fire = 3
     }
 }

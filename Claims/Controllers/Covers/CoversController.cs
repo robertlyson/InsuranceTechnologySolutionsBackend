@@ -1,5 +1,7 @@
+using Claims.Application.Covers;
 using Claims.Auditing;
 using Claims.Controllers.Covers.Dto;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 
@@ -9,12 +11,14 @@ namespace Claims.Controllers.Covers;
 [Route("[controller]")]
 public class CoversController : ControllerBase
 {
+    private readonly IMediator _mediator;
     private readonly CosmosClient _cosmosClient;
     private readonly ILogger<CoversController> _logger;
     private readonly Auditer _auditer;
 
-    public CoversController(CosmosClient cosmosClient, AuditContext auditContext, ILogger<CoversController> logger)
+    public CoversController(IMediator mediator, CosmosClient cosmosClient, AuditContext auditContext, ILogger<CoversController> logger)
     {
+        _mediator = mediator;
         _cosmosClient = cosmosClient;
         _logger = logger;
         _auditer = new Auditer(auditContext);
@@ -27,19 +31,9 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CoverDto>>> GetAsync()
+    public Task<IEnumerable<CoverDto>> GetAsync(CancellationToken cancellationToken = default)
     {
-        var container = await Container();
-        var query = container.GetItemQueryIterator<Cover>(new QueryDefinition("SELECT * FROM c"));
-        var results = new List<CoverDto>();
-        while (query.HasMoreResults)
-        {
-            var response = await query.ReadNextAsync();
-
-            results.AddRange(response.Select(ToDto).ToList());
-        }
-
-        return Ok(results);
+        return _mediator.Send(new GetCoversQuery(), cancellationToken);
     }
 
     [HttpGet("{id}")]
@@ -48,8 +42,8 @@ public class CoversController : ControllerBase
         var container = await Container();
         try
         {
-            var response = await container.ReadItemAsync<Cover>(id, new (id));
-            return Ok(ToDto(response.Resource));
+            var response = await container.ReadItemAsync<CoverCosmosEntity>(id, new (id));
+            return Ok(Mappers.ToDto(response.Resource));
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -65,7 +59,7 @@ public class CoversController : ControllerBase
         var id = Guid.NewGuid().ToString();
         var premium = ComputePremium(cover.StartDate!.Value, cover.EndDate!.Value, cover.CoverType!.Value);
 
-        var item = new Cover
+        var item = new CoverCosmosEntity
         {
             Id = id,
             Type = cover.CoverType.Value,
@@ -75,7 +69,7 @@ public class CoversController : ControllerBase
         };
         await container.CreateItemAsync(item, new PartitionKey(id));
         _auditer.AuditCover(id, "POST");
-        return Ok(ToDto(item));
+        return Ok(Mappers.ToDto(item));
     }
 
     [HttpDelete("{id}")]
@@ -83,7 +77,7 @@ public class CoversController : ControllerBase
     {
         var container = await Container();
         _auditer.AuditCover(id, "DELETE");
-        await container.DeleteItemAsync<Cover>(id, new (id));
+        await container.DeleteItemAsync<CoverCosmosEntity>(id, new (id));
     }
 
     private decimal ComputePremium(DateOnly startDate, DateOnly endDate, CoverType coverType)
@@ -118,18 +112,6 @@ public class CoversController : ControllerBase
         }
 
         return totalPremium;
-    }
-
-    private CoverDto ToDto(Cover cover)
-    {
-        return new CoverDto
-        {
-            Id = cover.Id,
-            StartDate = cover.StartDate,
-            EndDate = cover.EndDate,
-            CoverType = cover.Type,
-            Premium = cover.Premium,
-        };
     }
 
     private async Task<Container> Container()

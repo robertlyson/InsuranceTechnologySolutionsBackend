@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
+using Claims.Application.Covers;
 using Claims.Controllers.Covers.Dto;
 
 namespace Claims.Tests;

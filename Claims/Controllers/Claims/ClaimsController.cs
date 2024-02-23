@@ -37,9 +37,10 @@ namespace Claims.Controllers.Claims
         }
 
         [HttpGet("{id}")]
-        public Task<ClaimDto> GetAsync(string id, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken = default)
         {
-            return _mediator.Send(new GetClaimQuery(id), cancellationToken);
+            var claimDto = await _mediator.Send(new GetClaimQuery(id), cancellationToken);
+            return claimDto == null ? NotFound() : Ok(claimDto);
         }
     }
 }

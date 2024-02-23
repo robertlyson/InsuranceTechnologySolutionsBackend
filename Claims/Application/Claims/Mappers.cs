@@ -4,7 +4,7 @@ namespace Claims.Application.Claims;
 
 public class Mappers
 {
-    public static ClaimDto ToDto(Claim item)
+    public static ClaimDto ToDto(ClaimCosmosEntity item)
     {
         return new ClaimDto
         {
