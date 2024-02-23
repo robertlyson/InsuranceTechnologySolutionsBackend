@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Claims;
 using Claims.Auditing;
 using Claims.Controllers;
+using Claims.Infrastructure;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,34 +18,13 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     }
 );
 
-builder.Services.AddSingleton(_ =>
-{
-    var section = builder.Configuration.GetSection("CosmosDb");
-
-    var account = section.GetSection("Account").Value;
-    var key = section.GetSection("Key").Value;
-    
-    JsonSerializerOptions options = new()
-    {
-        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-        WriteIndented = true,
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-    };
-
-    var client = new CosmosClient(account, key,
-        new CosmosClientOptions { Serializer = new CosmosSystemTextJsonSerializer(options) });
-
-    return client;
-});
-builder.Services.AddSingleton(provider =>
-    InitializeCosmosClientInstanceAsync(provider.GetRequiredService<CosmosClient>(), builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
-
 builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddCosmos(builder.Configuration);
 
 var app = builder.Build();
 
@@ -68,17 +48,5 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
-static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
-{
-    var databaseName = configurationSection.GetSection("DatabaseName").Value;
-    var containerName1 = configurationSection.GetSection("ContainerName").Value;
-
-    var cosmosDbService = new CosmosDbService(client, databaseName, containerName1);
-    var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-    var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName1, "/id");
-
-    return cosmosDbService;
-}
 
 public partial class Program { }
