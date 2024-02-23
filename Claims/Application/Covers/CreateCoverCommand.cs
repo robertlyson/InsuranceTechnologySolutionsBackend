@@ -1,11 +1,13 @@
 ﻿using Claims.Application.Covers.Dto;
+using Claims.Application.Covers.Infrastructure;
 using Claims.Auditing;
+using Claims.Utils;
 using JetBrains.Annotations;
 using MediatR;
 
 namespace Claims.Application.Covers;
 
-public class CreateCoverCommand : IRequest<CoverDto>
+public class CreateCoverCommand : IRequest<Result<CoverDto>>
 {
     public CreateCoverDto Cover { get; }
 
@@ -16,7 +18,7 @@ public class CreateCoverCommand : IRequest<CoverDto>
 }
 
 [UsedImplicitly]
-public class CreateCoverCommandHandler : IRequestHandler<CreateCoverCommand, CoverDto>
+public class CreateCoverCommandHandler : IRequestHandler<CreateCoverCommand, Result<CoverDto>>
 {
     private readonly CoversCosmosRepository _repository;
     private readonly Auditer _auditer;
@@ -29,25 +31,16 @@ public class CreateCoverCommandHandler : IRequestHandler<CreateCoverCommand, Cov
         _premiumStrategy = premiumStrategy;
     }
     
-    public async Task<CoverDto> Handle(CreateCoverCommand request, CancellationToken cancellationToken)
+    public async Task<Result<CoverDto>> Handle(CreateCoverCommand request, CancellationToken cancellationToken)
     {
         var id = Guid.NewGuid();
 
-        var cover = request.Cover;
-        var premium = _premiumStrategy.Calculate(cover.StartDate!.Value, cover.EndDate!.Value, cover.CoverType!.Value);
-        var item = new CoverCosmosEntity
-        {
-            Id = id,
-            Type = cover.CoverType!.Value,
-            StartDate = cover.StartDate!.Value,
-            EndDate = cover.EndDate!.Value,
-            Premium = premium
-        };
+        var result = Cover.Create(request.Cover, _premiumStrategy);
 
-        await _repository.AddItemAsync(item, cancellationToken);
+        await _repository.AddItemAsync(result.Value, cancellationToken);
         
         _auditer.AuditCover(id.ToString(), "POST");
 
-        return Mappers.ToDto(item);
+        return Result<CoverDto>.Success(Mappers.ToDto(result.Value));
     }
 }

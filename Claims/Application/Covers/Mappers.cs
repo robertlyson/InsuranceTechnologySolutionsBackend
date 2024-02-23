@@ -15,4 +15,16 @@ public static class Mappers
             Premium = coverCosmosEntity.Premium,
         };
     }
+    
+    public static CoverDto ToDto(Cover cover)
+    {
+        return new CoverDto
+        {
+            Id = cover.Id,
+            StartDate = cover.StartDate,
+            EndDate = cover.EndDate,
+            CoverType = cover.Type,
+            Premium = cover.Premium,
+        };
+    }
 }

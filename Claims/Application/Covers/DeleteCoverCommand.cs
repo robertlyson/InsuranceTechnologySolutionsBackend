@@ -1,4 +1,5 @@
-﻿using Claims.Auditing;
+﻿using Claims.Application.Covers.Infrastructure;
+using Claims.Auditing;
 using JetBrains.Annotations;
 using MediatR;
 

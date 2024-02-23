@@ -1,4 +1,5 @@
 using Claims.Application.Covers.Dto;
+using Claims.Application.Covers.Infrastructure;
 using JetBrains.Annotations;
 using MediatR;
 

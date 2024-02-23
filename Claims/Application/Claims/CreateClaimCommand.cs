@@ -1,6 +1,7 @@
 ﻿using Claims.Application.Claims.Dto;
 using Claims.Application.Claims.Infrastructure;
 using Claims.Application.Covers;
+using Claims.Application.Covers.Infrastructure;
 using Claims.Auditing;
 using Claims.Utils;
 using JetBrains.Annotations;
