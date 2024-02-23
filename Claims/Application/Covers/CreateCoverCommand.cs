@@ -31,7 +31,7 @@ public class CreateCoverCommandHandler : IRequestHandler<CreateCoverCommand, Cov
     
     public async Task<CoverDto> Handle(CreateCoverCommand request, CancellationToken cancellationToken)
     {
-        var id = Guid.NewGuid().ToString();
+        var id = Guid.NewGuid();
 
         var cover = request.Cover;
         var premium = _premiumStrategy.Calculate(cover.StartDate!.Value, cover.EndDate!.Value, cover.CoverType!.Value);
@@ -46,7 +46,7 @@ public class CreateCoverCommandHandler : IRequestHandler<CreateCoverCommand, Cov
 
         await _repository.AddItemAsync(item, cancellationToken);
         
-        _auditer.AuditCover(id, "POST");
+        _auditer.AuditCover(id.ToString(), "POST");
 
         return Mappers.ToDto(item);
     }

@@ -9,7 +9,7 @@ public class Mappers
         return new ClaimDto
         {
             Id = Guid.Parse(item.Id),
-            CoverId = Guid.Parse(item.CoverId),
+            CoverId = item.CoverId,
             ClaimType = item.Type,
             Created = item.Created,
             DamageCost = item.DamageCost,

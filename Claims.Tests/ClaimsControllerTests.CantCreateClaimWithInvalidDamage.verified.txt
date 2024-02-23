@@ -1,0 +1,20 @@
+﻿{
+  Version: 1.1,
+  Status: 400 Bad Request,
+  Content: {
+    Headers: {
+      Content-Type: text/plain; charset=utf-8
+    },
+    Value: DamageCost cannot exceed 100000.
+  },
+  Request: {
+    Method: POST,
+    Uri: http://localhost/claims,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: 
+    }
+  }
+}

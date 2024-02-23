@@ -1,6 +1,8 @@
 ﻿using System.Net.Http.Json;
 using Claims.Application.Claims;
 using Claims.Application.Claims.Dto;
+using Claims.Application.Covers;
+using Claims.Application.Covers.Dto;
 
 namespace Claims.Tests
 {
@@ -27,10 +29,12 @@ namespace Claims.Tests
             var application = base.Factory!;
 
             using var client = application.CreateClient();
+            
+            var cover = await CreateValidCover(client);
 
             var payload = new CreateClaimDto
             {
-                CoverId = Guid.NewGuid(), 
+                CoverId = cover.Id, 
                 Created = DateTime.UtcNow, 
                 Name = "EF3EB3FE-8083-4572-B995-7EAF16F5EC70",
                 ClaimType = ClaimType.Fire, 
@@ -59,10 +63,12 @@ namespace Claims.Tests
             var application = base.Factory!;
 
             using var client = application.CreateClient();
+            
+            var cover = await CreateValidCover(client);
 
             var payload = new CreateClaimDto
             {
-                CoverId = Guid.NewGuid(), 
+                CoverId = cover.Id, 
                 Created = DateTime.UtcNow, 
                 Name = "2F2743A9-0D5E-45F1-8134-39487EC6CFE6",
                 ClaimType = ClaimType.Fire, 
@@ -90,5 +96,84 @@ namespace Claims.Tests
 
             await Verify(createResponse);
         }
+
+        [Test]
+        public async Task CantCreateClaimWithInvalidDamage()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+            
+            var cover = await CreateValidCover(client);
+
+            var payload = new CreateClaimDto
+            {
+                CoverId = cover.Id, 
+                Created = DateTime.UtcNow, 
+                Name = "A2ED5661-7F81-434E-BDBF-56CF44AA1318",
+                ClaimType = ClaimType.Fire, 
+                DamageCost = 100_001,
+            };
+            var createResponse = await client.PostAsJsonAsync("/claims", payload);
+
+            await Verify(createResponse);
+        }
+
+        [Test]
+        public async Task BadRequestWhenCoverDoesntExist()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+
+            var payload = new CreateClaimDto
+            {
+                CoverId = Guid.NewGuid(), 
+                Created = DateTime.UtcNow, 
+                Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
+                ClaimType = ClaimType.Fire, 
+                DamageCost = 100_001,
+            };
+            var createResponse = await client.PostAsJsonAsync("/claims", payload);
+
+            await Verify(createResponse);
+        }
+
+        [Test]
+        public async Task CreatedDateMustBeWithinThePeriodOfTheRelatedCover()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+            
+            var cover = await CreateValidCover(client);
+
+            var payload = new CreateClaimDto
+            {
+                CoverId = cover.Id, 
+                Created = new DateTime(2000, 1, 1), 
+                Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
+                ClaimType = ClaimType.Fire, 
+                DamageCost = 100,
+            };
+            var createResponse = await client.PostAsJsonAsync("/claims", payload);
+
+            await Verify(createResponse);
+        }
+
+        private static async Task<CoverDto> CreateValidCover(HttpClient client)
+        {
+            var coverPayload = new CreateCoverDto
+            {
+                CoverType = CoverType.Yacht,
+                StartDate = DateOnly.FromDateTime(new DateTime(2024, 1, 1)),
+                EndDate = DateOnly.FromDateTime(new DateTime(2025, 1, 1)),
+            };
+            var createCoverResponse = await client.PostAsJsonAsync("/covers", coverPayload);
+            var cover = await createCoverResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions()) ?? throw new Exception("Cover could not be created.");
+            return cover;
+        }
     }
 }
+
+

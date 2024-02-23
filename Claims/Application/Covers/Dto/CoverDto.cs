@@ -5,7 +5,7 @@ namespace Claims.Application.Covers.Dto;
 public class CoverDto
 {
     [JsonRequired]
-    public string Id { get; set; } = string.Empty;
+    public Guid Id { get; set; }
     [JsonRequired] 
     public DateOnly StartDate { get; set; }
     

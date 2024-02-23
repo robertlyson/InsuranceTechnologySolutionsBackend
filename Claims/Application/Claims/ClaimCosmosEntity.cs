@@ -7,7 +7,7 @@ namespace Claims.Application.Claims
         [JsonProperty(PropertyName = "id")] public string Id { get; set; } = string.Empty;
 
         [JsonProperty(PropertyName = "coverId")]
-        public string CoverId { get; set; } = string.Empty;
+        public Guid CoverId { get; set; }
 
         [JsonProperty(PropertyName = "created")]
         public DateTime Created { get; set; }

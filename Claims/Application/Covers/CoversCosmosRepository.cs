@@ -43,7 +43,7 @@ public class CoversCosmosRepository
 
     public Task AddItemAsync(CoverCosmosEntity item, CancellationToken cancellationToken = default)
     {
-        return _container.CreateItemAsync(item, new PartitionKey(item.Id), cancellationToken: cancellationToken);
+        return _container.CreateItemAsync(item, new PartitionKey(item.Id.ToString()), cancellationToken: cancellationToken);
     }
 
     public Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)

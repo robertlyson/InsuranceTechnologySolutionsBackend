@@ -26,8 +26,14 @@ namespace Claims.Controllers.Claims
         [HttpPost]
         public async Task<ActionResult> CreateAsync(CreateClaimDto claim, CancellationToken cancellationToken = default)
         {
-            var claimDto = await _mediator.Send(new CreateClaimCommand(claim), cancellationToken);
-            return Ok(claimDto);
+            var result = await _mediator.Send(new CreateClaimCommand(claim), cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(result.Error.Description);
+            }
+            
+            return Ok(result.Value);
         }
 
         [HttpDelete("{id}")]
