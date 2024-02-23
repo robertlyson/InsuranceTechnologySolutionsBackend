@@ -6,11 +6,11 @@
 - ~~command / queries~~
 - ~~repositories~~
 - ~~refactor builder.Configuration.GetSection("CosmosDb") with IOptions~~
-- task 2
-- domain model
-- problem details handling
+- ~~task 2~~
+- ~~domain model~~
 - task 3 / outbox 
 - task 5
+- problem details handling
 
 - extend get with filters
 - logging
