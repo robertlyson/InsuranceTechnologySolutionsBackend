@@ -1,9 +1,5 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Claims.Controllers.Claims.Dto;
-using NUnit.Framework;
-using VerifyTests;
 
 namespace Claims.Tests
 {
@@ -40,7 +36,7 @@ namespace Claims.Tests
                 DamageCost = decimal.One
             };
             var createResponse = await client.PostAsJsonAsync("/claims", payload);
-            var createdClaim = await createResponse.Content.ReadFromJsonAsync<Claim>(SerializerOptions());
+            var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
             var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
             await Verify(getResponse);
         }
@@ -61,7 +57,7 @@ namespace Claims.Tests
                 DamageCost = decimal.One
             };
             var createResponse = await client.PostAsJsonAsync("/claims", payload);
-            var createdClaim = await createResponse.Content.ReadFromJsonAsync<Claim>(SerializerOptions());
+            var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
             var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
             var deleteResponse = await client.DeleteAsync($"/claims/{createdClaim!.Id}");
 

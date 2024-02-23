@@ -55,6 +55,10 @@ public class BaseTest
 
     protected static JsonSerializerOptions SerializerOptions()
     {
-        return new JsonSerializerOptions { Converters = { new JsonStringEnumConverter() }};
+        return new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            Converters = { new JsonStringEnumConverter() }
+        };
     }
 }

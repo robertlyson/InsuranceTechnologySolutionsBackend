@@ -1,0 +1,56 @@
+﻿[
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        id: Guid_1,
+        startDate: 2020-01-01,
+        endDate: 2021-01-01,
+        coverType: Yacht,
+        premium: 738100.0
+      }
+    },
+    Request: {
+      Method: POST,
+      Uri: http://localhost/covers,
+      Content: {
+        Headers: {
+          Content-Type: application/json; charset=utf-8
+        },
+        Value: 
+      }
+    }
+  },
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        id: Guid_1,
+        startDate: 2020-01-01,
+        endDate: 2021-01-01,
+        coverType: Yacht,
+        premium: 738100.0
+      }
+    },
+    Request: http://localhost/covers/Guid_1
+  },
+  {
+    Version: 1.1,
+    Status: 200 OK,
+    Content: {
+      Headers: {}
+    },
+    Request: {
+      Method: DELETE,
+      Uri: http://localhost/covers/Guid_1
+    }
+  }
+]

@@ -4,7 +4,8 @@ namespace Claims.Controllers.Covers.Dto;
 
 public class CoverDto
 {
-    [JsonRequired] public string Id { get; set; } = string.Empty;
+    [JsonRequired]
+    public string Id { get; set; } = string.Empty;
     [JsonRequired] 
     public DateOnly StartDate { get; set; }
     

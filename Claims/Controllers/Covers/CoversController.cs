@@ -63,14 +63,14 @@ public class CoversController : ControllerBase
         var container = await Container();
 
         var id = Guid.NewGuid().ToString();
-        var premium = ComputePremium(cover.StartDate, cover.EndDate, cover.CoverType);
+        var premium = ComputePremium(cover.StartDate!.Value, cover.EndDate!.Value, cover.CoverType!.Value);
 
         var item = new Cover
         {
             Id = id,
-            Type = cover.CoverType,
-            StartDate = cover.StartDate,
-            EndDate = cover.EndDate,
+            Type = cover.CoverType.Value,
+            StartDate = cover.StartDate.Value,
+            EndDate = cover.EndDate.Value,
             Premium = premium
         };
         await container.CreateItemAsync(item, new PartitionKey(id));

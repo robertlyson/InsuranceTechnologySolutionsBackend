@@ -1,0 +1,17 @@
+﻿{
+  Version: 1.1,
+  Status: 200 OK,
+  Content: {
+    Headers: {
+      Content-Type: application/json; charset=utf-8
+    },
+    Value: {
+      id: Guid_1,
+      startDate: 2024-01-01,
+      endDate: 2025-01-01,
+      coverType: Yacht,
+      premium: 738100.0
+    }
+  },
+  Request: http://localhost/covers/Guid_1
+}
