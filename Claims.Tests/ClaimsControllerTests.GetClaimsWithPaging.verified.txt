@@ -1,0 +1,10 @@
+﻿[
+  {
+    Id: Guid_1,
+    CoverId: Guid_2,
+    Created: DateTime_1,
+    Name: paging_2,
+    ClaimType: Fire,
+    DamageCost: 1.0
+  }
+]

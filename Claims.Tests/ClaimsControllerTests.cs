@@ -22,6 +22,38 @@ namespace Claims.Tests
 
             //TODO: Apart from ensuring 200 OK being returned, what else can be asserted?
         }
+        
+        [Test]
+        public async Task GetClaimsWithPaging()
+        {
+            var application = base.Factory!;
+
+            using var client = application.CreateClient();
+            var cover = await CreateValidCover(client);
+
+            var payload1 = new CreateClaimDto
+            {
+                CoverId = cover.Id, 
+                Created = DateTime.UtcNow, 
+                Name = "paging_1",
+                ClaimType = ClaimType.Fire, 
+                DamageCost = decimal.One
+            };
+            await client.PostAsJsonAsync("/claims", payload1);
+
+            var payload2 = new CreateClaimDto
+            {
+                CoverId = cover.Id, 
+                Created = DateTime.UtcNow, 
+                Name = "paging_2",
+                ClaimType = ClaimType.Fire, 
+                DamageCost = decimal.One
+            };
+            await client.PostAsJsonAsync("/claims", payload2);
+            var response = await client.GetFromJsonAsync<ClaimDto[]>("/claims?take=1&skip=1&name=paging", SerializerOptions());
+
+            await Verify(response);
+        }
 
         [Test]
         public async Task GetClaim()

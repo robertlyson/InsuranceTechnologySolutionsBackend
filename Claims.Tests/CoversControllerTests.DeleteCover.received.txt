@@ -11,7 +11,7 @@
         startDate: 2030-01-01,
         endDate: 2030-02-01,
         coverType: Yacht,
-        premium: 120958.75
+        premium: 43862.5
       }
     },
     Request: {
@@ -37,7 +37,7 @@
         startDate: 2030-01-01,
         endDate: 2030-02-01,
         coverType: Yacht,
-        premium: 120958.75
+        premium: 43862.5
       }
     },
     Request: http://localhost/covers/Guid_1

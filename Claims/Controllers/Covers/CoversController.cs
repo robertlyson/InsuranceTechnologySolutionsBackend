@@ -31,9 +31,9 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet]
-    public Task<IEnumerable<CoverDto>> GetAsync(CancellationToken cancellationToken = default)
+    public Task<IEnumerable<CoverDto>> GetAsync(int take = 10, int skip = 0, CancellationToken cancellationToken = default)
     {
-        return _mediator.Send(new GetCoversQuery(), cancellationToken);
+        return _mediator.Send(new GetCoversQuery(take, skip), cancellationToken);
     }
 
     [HttpGet("{id}")]

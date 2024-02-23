@@ -18,9 +18,9 @@ namespace Claims.Controllers.Claims
         }
 
         [HttpGet]
-        public Task<ClaimDto[]> GetAsync(CancellationToken cancellationToken = default)
+        public Task<ClaimDto[]> GetAsync(int take = 10, int skip = 0, string? name = null, CancellationToken cancellationToken = default)
         {
-            return _mediator.Send(new GetClaimsQuery(), cancellationToken);
+            return _mediator.Send(new GetClaimsQuery(take, skip, name), cancellationToken);
         }
 
         [HttpPost]

@@ -14,9 +14,21 @@ public class ClaimsCosmosRepository
         _container = dbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(int take, int skip, string? name = null, CancellationToken cancellationToken = default)
     {
-        var query = _container.GetItemQueryIterator<ClaimCosmosEntity>(new QueryDefinition("SELECT * FROM c"));
+        var queryDefinition = new QueryDefinition("SELECT * FROM c OFFSET @offset LIMIT @limit")
+            .WithParameter("@limit", take)
+            .WithParameter("@offset", skip);
+
+        if (!string.IsNullOrEmpty(name))
+        {
+            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
+                .WithParameter("@name", name)
+                .WithParameter("@limit", take)
+                .WithParameter("@offset", skip);
+        }
+        
+        var query = _container.GetItemQueryIterator<ClaimCosmosEntity>(queryDefinition);
         var results = new List<ClaimCosmosEntity>();
         while (query.HasMoreResults)
         {

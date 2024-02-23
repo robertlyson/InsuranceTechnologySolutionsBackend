@@ -8,7 +8,14 @@ namespace Claims.Application.Covers;
 
 public class GetCoversQuery : IRequest<IEnumerable<CoverDto>>
 {
-    
+    public int Take { get; }
+    public int Skip { get; }
+
+    public GetCoversQuery(int take, int skip)
+    {
+        Take = take;
+        Skip = skip;
+    }
 }
 
 [UsedImplicitly]
@@ -23,7 +30,7 @@ public class GetCoversQueryHandler : IRequestHandler<GetCoversQuery, IEnumerable
     
     public async Task<IEnumerable<CoverDto>> Handle(GetCoversQuery request, CancellationToken cancellationToken)
     {
-        var covers = await _coversCosmosRepository.GetCoversAsync(cancellationToken);
+        var covers = await _coversCosmosRepository.GetCoversAsync(request.Take, request.Skip, cancellationToken);
         return covers.Select(Mappers.ToDto);
     }
 }

@@ -14,10 +14,14 @@ public class CoversCosmosRepository
         _container = dbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(int take, int skip, CancellationToken cancellationToken = default)
     {
-        var query = _container.GetItemQueryIterator<CoverCosmosEntity>(new QueryDefinition("SELECT * FROM c"));
+        var queryDefinition = new QueryDefinition("SELECT * FROM c OFFSET @offset LIMIT @limit")
+            .WithParameter("@limit", take)
+            .WithParameter("@offset", skip);
         var results = new List<CoverCosmosEntity>();
+        var query = _container.GetItemQueryIterator<CoverCosmosEntity>(queryDefinition);
+        
         while (query.HasMoreResults)
         {
             var response = await query.ReadNextAsync(cancellationToken);
