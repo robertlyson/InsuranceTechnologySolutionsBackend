@@ -1,7 +1,6 @@
-﻿using Claims.Application.Claims;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 
-namespace Claims;
+namespace Claims.Application.Claims;
 
 public class ClaimsCosmosRepository
 {

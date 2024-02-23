@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
+using Claims.Application.Claims;
 using Microsoft.Azure.Cosmos;
 
 namespace Claims.Infrastructure;
@@ -26,11 +27,11 @@ public static class CosmosDbExtensions
     static async Task<ClaimsCosmosRepository> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
     {
         var databaseName = configurationSection.GetSection("DatabaseName").Value;
-        var containerName1 = configurationSection.GetSection("ContainerName").Value;
+        var claimsContainerName = configurationSection.GetSection("ClaimContainerName").Value;
 
-        var cosmosDbService = new ClaimsCosmosRepository(client, databaseName, containerName1);
+        var cosmosDbService = new ClaimsCosmosRepository(client, databaseName, claimsContainerName);
         var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
-        var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName1, "/id");
+        var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(claimsContainerName, "/id");
 
         return cosmosDbService;
     }
