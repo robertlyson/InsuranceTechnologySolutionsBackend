@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 using Claims.Application.Claims;
+using Claims.Application.Claims.Infrastructure;
 using Claims.Application.Covers;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Options;

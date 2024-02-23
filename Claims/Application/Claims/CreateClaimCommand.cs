@@ -1,4 +1,5 @@
 ﻿using Claims.Application.Claims.Dto;
+using Claims.Application.Claims.Infrastructure;
 using Claims.Application.Covers;
 using Claims.Auditing;
 using Claims.Utils;
@@ -33,37 +34,22 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Res
     
     public async Task<Result<ClaimDto>> Handle(CreateClaimCommand request, CancellationToken cancellationToken)
     {
-        var claim = request.Claim;
-
         var cover = await _coversCosmosRepository.GetCoverAsync(request.Claim.CoverId?.ToString() ?? string.Empty, cancellationToken);
         if (cover == null)
         {
             return Result<ClaimDto>.Failure(ClaimErrors.CoverNotFound);
         }
 
-        if (claim.DamageCost > 100_000)
+        var result = Claim.Create(request.Claim, cover);
+
+        if (result.IsFailure)
         {
-            return Result<ClaimDto>.Failure(ClaimErrors.ExceededDamageCost);
+            return Result<ClaimDto>.Failure(result.Error);
         }
 
-        var created = DateOnly.FromDateTime(claim.Created!.Value);
-        if (created < cover.StartDate || created > cover.EndDate)
-        {
-            return Result<ClaimDto>.Failure(ClaimErrors.CreatedDateNotWithinCoverPeriod);
-        }
-        
-        var id = Guid.NewGuid();
-        var item = new ClaimCosmosEntity
-        {
-            Id = id.ToString(),
-            Name = claim.Name!,
-            Type = claim.ClaimType!.Value,
-            CoverId = claim.CoverId!.Value,
-            Created = claim.Created!.Value,
-            DamageCost = claim.DamageCost!.Value
-        };
-        await _claimsCosmosRepository.AddItemAsync(item, cancellationToken);
-        _auditer.AuditClaim(item.Id, "POST");
-        return Result<ClaimDto>.Success(Mappers.ToDto(item));
+        var claim = result.Value;
+        await _claimsCosmosRepository.AddItemAsync(claim, cancellationToken);
+        _auditer.AuditClaim(claim.Id.ToString(), "POST");
+        return Result<ClaimDto>.Success(Mappers.ToDto(claim));
     }
 }

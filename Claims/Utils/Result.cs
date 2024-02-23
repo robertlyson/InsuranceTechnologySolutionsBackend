@@ -9,10 +9,15 @@ public class Result<T>
         {
             throw new ArgumentException("Invalid error", nameof(error));
         }
+        
+        if (isSuccess && value == null)
+        {
+            throw new ArgumentException("Invalid success");
+        }
 
         IsSuccess = isSuccess;
         Error = error;
-        Value = value;
+        Value = value!;
     }
 
     public bool IsSuccess { get; }
@@ -20,7 +25,7 @@ public class Result<T>
     public bool IsFailure => !IsSuccess;
 
     public Error Error { get; }
-    public T? Value { get; }
+    public T Value { get; }
 
     public static Result<T> Success(T value) => new(true, Error.None, value);
 

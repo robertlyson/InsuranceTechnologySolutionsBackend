@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 
-namespace Claims.Application.Claims;
+namespace Claims.Application.Claims.Infrastructure;
 
 public class ClaimsCosmosRepository
 {
@@ -40,9 +40,19 @@ public class ClaimsCosmosRepository
         }
     }
 
-    public Task AddItemAsync(ClaimCosmosEntity item, CancellationToken cancellationToken = default)
+    public Task AddItemAsync(Claim item, CancellationToken cancellationToken = default)
     {
-        return _container.CreateItemAsync(item, new PartitionKey(item.Id), cancellationToken: cancellationToken);
+        var entity = new ClaimCosmosEntity
+        {
+            Id = item.Id.ToString(),
+            Name = item.Name,
+            DamageCost = item.DamageCost,
+            Created = item.Created,
+            CoverId = item.CoverId,
+            Type = item.Type
+        };
+
+        return _container.CreateItemAsync(entity, new PartitionKey(entity.Id), cancellationToken: cancellationToken);
     }
 
     public Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
