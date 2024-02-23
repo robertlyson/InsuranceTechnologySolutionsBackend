@@ -12,16 +12,16 @@ public class GetClaimsQuery : IRequest<ClaimDto[]>
 [UsedImplicitly]
 public class GetClaimsQueryHandler : IRequestHandler<GetClaimsQuery, ClaimDto[]>
 {
-    private readonly CosmosDbService _cosmosDbService;
+    private readonly ClaimsCosmosRepository _claimsCosmosRepository;
 
-    public GetClaimsQueryHandler(CosmosDbService cosmosDbService)
+    public GetClaimsQueryHandler(ClaimsCosmosRepository claimsCosmosRepository)
     {
-        _cosmosDbService = cosmosDbService;
+        _claimsCosmosRepository = claimsCosmosRepository;
     }
     
     public async Task<ClaimDto[]> Handle(GetClaimsQuery request, CancellationToken cancellationToken)
     {
-        var claims = await _cosmosDbService.GetClaimsAsync();
+        var claims = await _claimsCosmosRepository.GetClaimsAsync();
         return claims.Select(Mappers.ToDto).ToArray();
     }
 }

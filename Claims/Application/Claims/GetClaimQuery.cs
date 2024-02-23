@@ -17,17 +17,17 @@ public class GetClaimQuery : IRequest<ClaimDto?>
 [UsedImplicitly]
 public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto>
 {
-    private readonly CosmosDbService _cosmosDbService;
+    private readonly ClaimsCosmosRepository _claimsCosmosRepository;
 
-    public GetClaimQueryHandler(CosmosDbService cosmosDbService)
+    public GetClaimQueryHandler(ClaimsCosmosRepository claimsCosmosRepository)
     {
-        _cosmosDbService = cosmosDbService;
+        _claimsCosmosRepository = claimsCosmosRepository;
     }
     
     public async Task<ClaimDto?> Handle(GetClaimQuery request, CancellationToken cancellationToken)
     {
         var id = request.Id;
-        var claim = await _cosmosDbService.GetClaimAsync(id);
+        var claim = await _claimsCosmosRepository.GetClaimAsync(id);
         return claim == null ? null : Mappers.ToDto(claim);
     }
 }

@@ -3,11 +3,11 @@ using Microsoft.Azure.Cosmos;
 
 namespace Claims;
 
-public class CosmosDbService
+public class ClaimsCosmosRepository
 {
     private readonly Container _container;
 
-    public CosmosDbService(CosmosClient dbClient,
+    public ClaimsCosmosRepository(CosmosClient dbClient,
         string databaseName,
         string containerName)
     {

@@ -18,12 +18,12 @@ public class CreateClaimCommand : IRequest<ClaimDto>
 [UsedImplicitly]
 public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, ClaimDto>
 {
-    private readonly CosmosDbService _cosmosDbService;
+    private readonly ClaimsCosmosRepository _claimsCosmosRepository;
     private readonly Auditer _auditer;
 
-    public CreateClaimCommandHandler(CosmosDbService cosmosDbService, Auditer auditer)
+    public CreateClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository, Auditer auditer)
     {
-        _cosmosDbService = cosmosDbService;
+        _claimsCosmosRepository = claimsCosmosRepository;
         _auditer = auditer;
     }
     
@@ -40,7 +40,7 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Cla
             Created = claim.Created!.Value,
             DamageCost = claim.DamageCost!.Value
         };
-        await _cosmosDbService.AddItemAsync(item);
+        await _claimsCosmosRepository.AddItemAsync(item);
         _auditer.AuditClaim(item.Id, "POST");
         return Mappers.ToDto(item);
     }

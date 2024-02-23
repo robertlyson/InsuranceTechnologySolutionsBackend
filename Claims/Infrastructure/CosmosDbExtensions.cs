@@ -23,12 +23,12 @@ public static class CosmosDbExtensions
             InitializeCosmosClientInstanceAsync(provider.GetRequiredService<CosmosClient>(), configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
     }
 
-    static async Task<CosmosDbService> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
+    static async Task<ClaimsCosmosRepository> InitializeCosmosClientInstanceAsync(CosmosClient client, IConfigurationSection configurationSection)
     {
         var databaseName = configurationSection.GetSection("DatabaseName").Value;
         var containerName1 = configurationSection.GetSection("ContainerName").Value;
 
-        var cosmosDbService = new CosmosDbService(client, databaseName, containerName1);
+        var cosmosDbService = new ClaimsCosmosRepository(client, databaseName, containerName1);
         var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);
         var containerResponse = await database.Database.CreateContainerIfNotExistsAsync(containerName1, "/id");
 

@@ -17,12 +17,12 @@ public class DeleteClaimCommand : IRequest<Unit>
 [UsedImplicitly]
 public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, Unit>
 {
-    private readonly CosmosDbService _cosmosDbService;
+    private readonly ClaimsCosmosRepository _claimsCosmosRepository;
     private readonly Auditer _auditer;
 
-    public DeleteClaimCommandHandler(CosmosDbService cosmosDbService, Auditer auditer)
+    public DeleteClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository, Auditer auditer)
     {
-        _cosmosDbService = cosmosDbService;
+        _claimsCosmosRepository = claimsCosmosRepository;
         _auditer = auditer;
     }
     
@@ -30,7 +30,7 @@ public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, Uni
     {
         var id = request.ClaimId;
         _auditer.AuditClaim(id, "DELETE");
-        await _cosmosDbService.DeleteItemAsync(id);
+        await _claimsCosmosRepository.DeleteItemAsync(id);
 
         return new Unit();
     }
