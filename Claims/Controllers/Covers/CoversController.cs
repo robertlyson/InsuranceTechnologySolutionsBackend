@@ -27,23 +27,23 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Cover>>> GetAsync()
+    public async Task<ActionResult<IEnumerable<CoverDto>>> GetAsync()
     {
         var container = await Container();
         var query = container.GetItemQueryIterator<Cover>(new QueryDefinition("SELECT * FROM c"));
-        var results = new List<Cover>();
+        var results = new List<CoverDto>();
         while (query.HasMoreResults)
         {
             var response = await query.ReadNextAsync();
 
-            results.AddRange(response.ToList());
+            results.AddRange(response.Select(ToDto).ToList());
         }
 
         return Ok(results);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Cover>> GetAsync(string id)
+    public async Task<ActionResult<CoverDto>> GetAsync(string id)
     {
         var container = await Container();
         try

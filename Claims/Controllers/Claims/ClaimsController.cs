@@ -52,9 +52,10 @@ namespace Claims.Controllers.Claims
         }
 
         [HttpGet("{id}")]
-        public Task<Claim> GetAsync(string id)
+        public async Task<ClaimDto> GetAsync(string id)
         {
-            return _cosmosDbService.GetClaimAsync(id);
+            var claim = await _cosmosDbService.GetClaimAsync(id);
+            return ToDto(claim);
         }
 
         private static ClaimDto ToDto(Claim item)

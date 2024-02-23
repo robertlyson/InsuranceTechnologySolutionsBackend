@@ -14,17 +14,8 @@ public static class CosmosDbExtensions
 
             var account = section.GetSection("Account").Value;
             var key = section.GetSection("Key").Value;
-    
-            JsonSerializerOptions options = new()
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.Never,
-                WriteIndented = true,
-                PropertyNameCaseInsensitive = true,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            };
 
-            var client = new CosmosClient(account, key,
-                new CosmosClientOptions { Serializer = new CosmosSystemTextJsonSerializer(options) });
+            var client = new CosmosClient(account, key);
 
             return client;
         });

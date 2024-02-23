@@ -1,23 +1,22 @@
-using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
 namespace Claims;
 
 public class Cover
 {
-    [JsonPropertyName("id")]
+    [JsonProperty(PropertyName = "id")]
     public string Id { get; set; }
 
-    [JsonPropertyName("startDate")]
+    [JsonProperty(PropertyName = "startDate")]
     public DateOnly StartDate { get; set; }
     
-    [JsonPropertyName("endDate")]
+    [JsonProperty(PropertyName = "endDate")]
     public DateOnly EndDate { get; set; }
     
-    [JsonPropertyName("claimType")]
+    [JsonProperty(PropertyName = "claimType")]
     public CoverType Type { get; set; }
 
-    [JsonPropertyName("premium")]
+    [JsonProperty(PropertyName = "premium")]
     public decimal Premium { get; set; }
 }
 
