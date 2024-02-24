@@ -25,7 +25,8 @@ public class AuditHostedService : IHostedService
         var databaseName = _options.Value.DatabaseName;
         var claimsContainerName = _options.Value.ClaimsContainerName;
         var coversContainerName = _options.Value.CoversContainerName;
-        var database = _cosmosClient.GetDatabase(databaseName);
+        var databaseResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseName, cancellationToken: cancellationToken);
+        var database = databaseResponse.Database;
 
         var claimsProcessor = await BuildProcessor<ClaimCosmosEntity>(database, claimsContainerName,
             HandleClaimChanges, cancellationToken);

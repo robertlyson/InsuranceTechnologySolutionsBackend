@@ -12,7 +12,7 @@
 - ~~get rid of warnings~~
 - ~~extend get with filters~~
 - ~~task 3 / outbox~~
+- deploy to Azure
 - problem details handling
 
 - logging
-- deploy to Azure
