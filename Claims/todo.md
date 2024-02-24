@@ -11,7 +11,7 @@
 - ~~task 5~~
 - ~~get rid of warnings~~
 - ~~extend get with filters~~
-- task 3 / outbox 
+- ~~task 3 / outbox~~
 - problem details handling
 
 - logging
