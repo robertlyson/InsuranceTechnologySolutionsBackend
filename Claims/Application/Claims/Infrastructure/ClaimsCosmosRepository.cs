@@ -16,13 +16,13 @@ public class ClaimsCosmosRepository
 
     public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(int take, int skip, string? name = null, CancellationToken cancellationToken = default)
     {
-        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.Deleted = 0 OFFSET @offset LIMIT @limit")
+        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
 
         if (!string.IsNullOrEmpty(name))
         {
-            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.Deleted = 0 AND STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
+            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false AND STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
                 .WithParameter("@name", name)
                 .WithParameter("@limit", take)
                 .WithParameter("@offset", skip);
@@ -65,7 +65,8 @@ public class ClaimsCosmosRepository
             DamageCost = item.DamageCost,
             Created = item.Created,
             CoverId = item.CoverId,
-            Type = item.Type
+            Type = item.Type,
+            Deleted = false,
         };
 
         return _container.CreateItemAsync(entity, new PartitionKey(entity.Id), cancellationToken: cancellationToken);
