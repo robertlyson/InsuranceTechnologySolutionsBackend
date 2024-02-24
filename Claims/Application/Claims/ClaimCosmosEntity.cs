@@ -20,5 +20,8 @@ namespace Claims.Application.Claims
         [JsonProperty(PropertyName = "damageCost")]
         public decimal DamageCost { get; set; }
 
+        [JsonProperty(PropertyName = "deleted")]
+        public bool Deleted { get; set; }
+
     }
 }

@@ -17,4 +17,7 @@ public class CoverCosmosEntity
 
     [JsonProperty(PropertyName = "premium")]
     public decimal Premium { get; set; }
+
+    [JsonProperty(PropertyName = "deleted")]
+    public bool Deleted { get; set; }
 }

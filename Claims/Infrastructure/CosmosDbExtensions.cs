@@ -44,7 +44,7 @@ public static class CosmosDbExtensions
     static async Task<CoversCosmosRepository> CoversCosmosRepositoryAsync(CosmosClient client, IOptions<CosmosDbOption> options)
     {
         var databaseName = options.Value.DatabaseName!;
-        var containerName = options.Value.ClaimsContainerName!;
+        var containerName = options.Value.CoversContainerName!;
 
         var repository = new CoversCosmosRepository(client, databaseName, containerName);
         var database = await client.CreateDatabaseIfNotExistsAsync(databaseName);

@@ -25,8 +25,9 @@ public class CoversControllerTests : BaseTest
         var created = await createResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions());
         var getResponse = await client.GetAsync($"/covers/{created!.Id}");
         var deleteResponse = await client.DeleteAsync($"/covers/{created!.Id}");
+        var getDeletedResponse = await client.GetAsync($"/covers/{created!.Id}");
 
-        await Verify(new[] { createResponse, getResponse, deleteResponse });
+        await Verify(new[] { createResponse, getResponse, deleteResponse, getDeletedResponse });
     }
 
     [Test]

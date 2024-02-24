@@ -24,13 +24,11 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Res
 {
     private readonly ClaimsCosmosRepository _claimsCosmosRepository;
     private readonly CoversCosmosRepository _coversCosmosRepository;
-    private readonly Auditer _auditer;
 
-    public CreateClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository, CoversCosmosRepository coversCosmosRepository, Auditer auditer)
+    public CreateClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository, CoversCosmosRepository coversCosmosRepository)
     {
         _claimsCosmosRepository = claimsCosmosRepository;
         _coversCosmosRepository = coversCosmosRepository;
-        _auditer = auditer;
     }
     
     public async Task<Result<ClaimDto>> Handle(CreateClaimCommand request, CancellationToken cancellationToken)
@@ -50,7 +48,6 @@ public class CreateClaimCommandHandler : IRequestHandler<CreateClaimCommand, Res
 
         var claim = result.Value;
         await _claimsCosmosRepository.AddItemAsync(claim, cancellationToken);
-        _auditer.AuditClaim(claim.Id.ToString(), "POST");
         return Result<ClaimDto>.Success(Mappers.ToDto(claim));
     }
 }

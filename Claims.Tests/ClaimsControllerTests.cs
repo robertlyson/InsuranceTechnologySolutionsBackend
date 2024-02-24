@@ -110,8 +110,9 @@ namespace Claims.Tests
             var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
             var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
             var deleteResponse = await client.DeleteAsync($"/claims/{createdClaim!.Id}");
+            var getDeletedResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
 
-            await Verify(new[] { createResponse, getResponse, deleteResponse });
+            await Verify(new[] { createResponse, getResponse, deleteResponse, getDeletedResponse });
         }
 
         [Test]

@@ -52,5 +52,20 @@
       Method: DELETE,
       Uri: http://localhost/covers/Guid_1
     }
+  },
+  {
+    Version: 1.1,
+    Status: 404 Not Found,
+    Content: {
+      Headers: {
+        Content-Type: application/problem+json; charset=utf-8
+      },
+      Value: {
+        type: https://tools.ietf.org/html/rfc7231#section-6.5.4,
+        title: Not Found,
+        status: 404
+      }
+    },
+    Request: http://localhost/covers/Guid_1
   }
 ]

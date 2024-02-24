@@ -19,18 +19,15 @@ public class DeleteClaimCommand : IRequest<Unit>
 public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, Unit>
 {
     private readonly ClaimsCosmosRepository _claimsCosmosRepository;
-    private readonly Auditer _auditer;
 
-    public DeleteClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository, Auditer auditer)
+    public DeleteClaimCommandHandler(ClaimsCosmosRepository claimsCosmosRepository)
     {
         _claimsCosmosRepository = claimsCosmosRepository;
-        _auditer = auditer;
     }
     
     public async Task<Unit> Handle(DeleteClaimCommand request, CancellationToken cancellationToken)
     {
         var id = request.ClaimId;
-        _auditer.AuditClaim(id, "DELETE");
         await _claimsCosmosRepository.DeleteItemAsync(id, cancellationToken);
 
         return new Unit();

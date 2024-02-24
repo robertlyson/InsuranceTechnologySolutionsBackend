@@ -19,18 +19,15 @@ public class DeleteCoverCommand : IRequest<Unit>
 public class DeleteCoverCommandHandler : IRequestHandler<DeleteCoverCommand, Unit>
 {
     private readonly CoversCosmosRepository _repository;
-    private readonly Auditer _auditer;
 
-    public DeleteCoverCommandHandler(CoversCosmosRepository repository, Auditer auditer)
+    public DeleteCoverCommandHandler(CoversCosmosRepository repository)
     {
         _repository = repository;
-        _auditer = auditer;
     }
     
     public async Task<Unit> Handle(DeleteCoverCommand request, CancellationToken cancellationToken)
     {
         var id = request.Id;
-        _auditer.AuditCover(id, "DELETE");
         await _repository.DeleteItemAsync(id, cancellationToken);
 
         return new Unit();

@@ -9,30 +9,30 @@
             _auditContext = auditContext;
         }
 
-        public void AuditClaim(string id, string httpRequestType)
+        public async Task AuditClaim(string id, string httpRequestType, CancellationToken cancellationToken)
         {
             var claimAudit = new ClaimAudit()
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 ClaimId = id
             };
 
             _auditContext.Add(claimAudit);
-            _auditContext.SaveChanges();
+            await _auditContext.SaveChangesAsync(cancellationToken);
         }
         
-        public void AuditCover(string id, string httpRequestType)
+        public async Task AuditCover(string id, string httpRequestType, CancellationToken cancellationToken)
         {
             var coverAudit = new CoverAudit()
             {
-                Created = DateTime.Now,
+                Created = DateTime.UtcNow,
                 HttpRequestType = httpRequestType,
                 CoverId = id
             };
 
             _auditContext.Add(coverAudit);
-            _auditContext.SaveChanges();
+            await _auditContext.SaveChangesAsync(cancellationToken);
         }
     }
 }

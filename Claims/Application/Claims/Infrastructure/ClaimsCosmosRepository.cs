@@ -16,13 +16,13 @@ public class ClaimsCosmosRepository
 
     public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(int take, int skip, string? name = null, CancellationToken cancellationToken = default)
     {
-        var queryDefinition = new QueryDefinition("SELECT * FROM c OFFSET @offset LIMIT @limit")
+        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.Deleted = 0 OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
 
         if (!string.IsNullOrEmpty(name))
         {
-            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
+            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.Deleted = 0 AND STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
                 .WithParameter("@name", name)
                 .WithParameter("@limit", take)
                 .WithParameter("@offset", skip);
@@ -44,6 +44,10 @@ public class ClaimsCosmosRepository
         try
         {
             var response = await _container.ReadItemAsync<ClaimCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
+            if (response.Resource.Deleted)
+            {
+                return null;
+            }
             return response.Resource;
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -67,8 +71,13 @@ public class ClaimsCosmosRepository
         return _container.CreateItemAsync(entity, new PartitionKey(entity.Id), cancellationToken: cancellationToken);
     }
 
-    public Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
+    public async Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
     {
-        return _container.DeleteItemAsync<ClaimCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
+        var entity = await GetClaimAsync(id, cancellationToken);
+        if (entity != null)
+        {
+            entity.Deleted = true;
+            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions { }, cancellationToken);
+        }
     }
 }

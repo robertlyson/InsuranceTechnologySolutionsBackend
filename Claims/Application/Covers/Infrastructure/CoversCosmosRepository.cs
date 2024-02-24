@@ -16,7 +16,7 @@ public class CoversCosmosRepository
 
     public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(int take, int skip, CancellationToken cancellationToken = default)
     {
-        var queryDefinition = new QueryDefinition("SELECT * FROM c OFFSET @offset LIMIT @limit")
+        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.Deleted = 0 OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
         var results = new List<CoverCosmosEntity>();
@@ -36,7 +36,7 @@ public class CoversCosmosRepository
         try
         {
             var response = await _container.ReadItemAsync<CoverCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
-            return response.Resource;
+            return response.Resource.Deleted ? null : response.Resource;
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -52,14 +52,20 @@ public class CoversCosmosRepository
             StartDate = item.StartDate,
             EndDate = item.EndDate,
             Type = item.Type,
-            Premium = item.Premium
+            Premium = item.Premium,
+            Deleted = false,
         };
         
         return _container.CreateItemAsync(entity, new PartitionKey(entity.Id.ToString()), cancellationToken: cancellationToken);
     }
 
-    public Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
+    public async Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
     {
-        return _container.DeleteItemAsync<CoverCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
+        var entity = await GetCoverAsync(id, cancellationToken);
+        if (entity != null)
+        {
+            entity.Deleted = true;
+            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions { }, cancellationToken);
+        }
     }
 }
