@@ -16,7 +16,7 @@ public class CoversCosmosRepository
 
     public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(int take, int skip, CancellationToken cancellationToken = default)
     {
-        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = 0 OFFSET @offset LIMIT @limit")
+        var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
         var results = new List<CoverCosmosEntity>();
