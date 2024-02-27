@@ -41,6 +41,7 @@ public class ClaimsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(200)]
     [ProducesResponseType(typeof(NotFoundResult), 404)]
     [ProducesResponseType(typeof(ProblemDetails), 500)]
     public Task DeleteAsync(string id, CancellationToken cancellationToken = default)
