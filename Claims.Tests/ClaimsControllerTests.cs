@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Json;
+using Claims.Controllers.Dto;
 using Domain;
 using Infrastructure.Dto;
 
@@ -49,7 +50,7 @@ public class ClaimsControllerTests : BaseTest
         };
         await client.PostAsJsonAsync("/claims", payload2);
         var response =
-            await client.GetFromJsonAsync<ClaimDto[]>("/claims?take=1&skip=1&name=paging", SerializerOptions());
+            await client.GetFromJsonAsync<CollectionResponse<ClaimDto>>("/claims?take=1&skip=1&name=paging", SerializerOptions());
 
         await Verify(response);
     }
