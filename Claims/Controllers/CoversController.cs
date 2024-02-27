@@ -1,4 +1,5 @@
 using Claims.Application.Covers;
+using Claims.Controllers.Dto;
 using Domain;
 using Infrastructure.Covers;
 using Infrastructure.Dto;
@@ -22,19 +23,26 @@ public class CoversController : ControllerBase
     }
 
     [HttpPost("/premium")]
+    [ProducesResponseType(typeof(decimal), 200)]
     public ActionResult ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
     {
         return Ok(_premiumStrategy.Calculate(startDate, endDate, coverType));
     }
 
     [HttpGet]
-    public Task<IEnumerable<CoverDto>> GetAsync(int take = 10, int skip = 0,
+    [ProducesResponseType(typeof(CollectionResponse<CoverDto>), 200)]
+    [ProducesResponseType(typeof(ProblemDetails), 500)]
+    public async Task<CollectionResponse<CoverDto>> GetAsync(int take = 10, int skip = 0,
         CancellationToken cancellationToken = default)
     {
-        return _mediator.Send(new GetCoversQuery(take, skip), cancellationToken);
+        var covers = await _mediator.Send(new GetCoversQuery(take, skip), cancellationToken);
+        return new CollectionResponse<CoverDto>(covers);
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(CoverDto), 200)]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(ProblemDetails), 500)]
     public async Task<IActionResult> GetAsync(string id, CancellationToken cancellationToken = default)
     {
         var cover = await _mediator.Send(new GetCoverQuery(id), cancellationToken);
@@ -43,6 +51,9 @@ public class CoversController : ControllerBase
     }
 
     [HttpPost]
+    [ProducesResponseType(typeof(CoverDto), 200)]
+    [ProducesResponseType(typeof(BadRequestResult), 400)]
+    [ProducesResponseType(typeof(ProblemDetails), 500)]
     public async Task<ActionResult> CreateAsync(CreateCoverDto cover, CancellationToken cancellationToken = default)
     {
         var result = await _mediator.Send(new CreateCoverCommand(cover), cancellationToken);
@@ -50,6 +61,8 @@ public class CoversController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(NotFoundResult), 404)]
+    [ProducesResponseType(typeof(ProblemDetails), 500)]
     public Task DeleteAsync(string id, CancellationToken cancellationToken = default)
     {
         return _mediator.Send(new DeleteCoverCommand(id), cancellationToken);
