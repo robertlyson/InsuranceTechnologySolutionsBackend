@@ -1,4 +1,5 @@
 ﻿using Claims.Application.Covers;
+using Domain;
 using Shouldly;
 
 namespace Claims.Tests;

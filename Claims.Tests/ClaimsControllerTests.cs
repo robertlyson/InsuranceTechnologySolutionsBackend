@@ -1,8 +1,7 @@
 ﻿using System.Net.Http.Json;
-using Claims.Application.Claims;
-using Claims.Application.Claims.Dto;
 using Claims.Application.Covers;
-using Claims.Application.Covers.Dto;
+using Domain;
+using Infrastructure.Dto;
 
 namespace Claims.Tests
 {

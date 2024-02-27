@@ -1,12 +1,10 @@
-using System.Configuration;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Claims;
 using Claims.Application.Covers;
-using Claims.Auditing;
-using Claims.Controllers;
-using Claims.Infrastructure;
-using Microsoft.Azure.Cosmos;
+using Domain;
+using Infrastructure;
+using Infrastructure.Auditing;
+using Infrastructure.Covers;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -25,10 +23,10 @@ builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(buil
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCosmos(builder.Configuration);
-builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Program).Assembly));
+builder.Services.AddCosmos();
+builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateCoverCommand).Assembly));
 builder.Services.AddTransient<IPremiumStrategy, DefaultPremiumStrategy>();
-builder.Services.AddHostedService<AuditHostedService>();
+builder.Services.AddAuditing();
 
 var app = builder.Build();
 
@@ -42,11 +40,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AuditContext>();
-    context.Database.Migrate();
-}
+app.RunMigrations();
 
 app.Run();
 

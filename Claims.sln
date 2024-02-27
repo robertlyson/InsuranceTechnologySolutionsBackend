@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{49AF06ED-3491-409A-8185-8904C42F81EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{98B963B8-F28F-4864-9CAD-722197D0498D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,6 +32,14 @@ Global
 		{EC846D1B-22B5-4CED-B0CB-778EBFEE1C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC846D1B-22B5-4CED-B0CB-778EBFEE1C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC846D1B-22B5-4CED-B0CB-778EBFEE1C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49AF06ED-3491-409A-8185-8904C42F81EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49AF06ED-3491-409A-8185-8904C42F81EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49AF06ED-3491-409A-8185-8904C42F81EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49AF06ED-3491-409A-8185-8904C42F81EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B963B8-F28F-4864-9CAD-722197D0498D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B963B8-F28F-4864-9CAD-722197D0498D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B963B8-F28F-4864-9CAD-722197D0498D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B963B8-F28F-4864-9CAD-722197D0498D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
