@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Infrastructure.Claims;
+﻿using Infrastructure.Claims;
 using Infrastructure.Covers;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,18 +16,21 @@ public static class CosmosDbExtensions
         serviceCollection.AddSingleton(provider =>
         {
             var options = provider.GetRequiredService<IOptions<CosmosDbOption>>();
-            
+
             var client = new CosmosClient(options.Value.Account, options.Value.Key);
 
             return client;
         });
         serviceCollection.AddSingleton<IClaimsCosmosRepository, ClaimsCosmosRepository>(provider =>
-            ClaimsCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(), provider.GetRequiredService<IOptions<CosmosDbOption>>()).GetAwaiter().GetResult());
+            ClaimsCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(),
+                provider.GetRequiredService<IOptions<CosmosDbOption>>()).GetAwaiter().GetResult());
         serviceCollection.AddSingleton<ICoversCosmosRepository, CoversCosmosRepository>(provider =>
-            CoversCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(), provider.GetRequiredService<IOptions<CosmosDbOption>>()).GetAwaiter().GetResult());
+            CoversCosmosRepositoryAsync(provider.GetRequiredService<CosmosClient>(),
+                provider.GetRequiredService<IOptions<CosmosDbOption>>()).GetAwaiter().GetResult());
     }
 
-    static async Task<ClaimsCosmosRepository> ClaimsCosmosRepositoryAsync(CosmosClient client, IOptions<CosmosDbOption> options)
+    private static async Task<ClaimsCosmosRepository> ClaimsCosmosRepositoryAsync(CosmosClient client,
+        IOptions<CosmosDbOption> options)
     {
         var databaseName = options.Value.DatabaseName!;
         var containerName = options.Value.ClaimsContainerName!;
@@ -39,7 +41,8 @@ public static class CosmosDbExtensions
         return repository;
     }
 
-    static async Task<CoversCosmosRepository> CoversCosmosRepositoryAsync(CosmosClient client, IOptions<CosmosDbOption> options)
+    private static async Task<CoversCosmosRepository> CoversCosmosRepositoryAsync(CosmosClient client,
+        IOptions<CosmosDbOption> options)
     {
         var databaseName = options.Value.DatabaseName!;
         var containerName = options.Value.CoversContainerName!;

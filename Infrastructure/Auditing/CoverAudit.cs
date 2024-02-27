@@ -1,13 +1,12 @@
-﻿namespace Infrastructure.Auditing
+﻿namespace Infrastructure.Auditing;
+
+public class CoverAudit
 {
-    public class CoverAudit
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string? CoverId { get; set; }
+    public string? CoverId { get; set; }
 
-        public DateTime Created { get; set; }
+    public DateTime Created { get; set; }
 
-        public string? HttpRequestType { get; set; }
-    }
+    public string? HttpRequestType { get; set; }
 }

@@ -6,16 +6,16 @@ namespace Infrastructure.Claims;
 
 public class GetClaimsQuery : IRequest<ClaimDto[]>
 {
-    public int Take { get; }
-    public int Skip { get; }
-    public string? Name { get; }
-
     public GetClaimsQuery(int take, int skip, string? name)
     {
         Take = take;
         Skip = skip;
         Name = name;
     }
+
+    public int Take { get; }
+    public int Skip { get; }
+    public string? Name { get; }
 }
 
 [UsedImplicitly]
@@ -27,10 +27,11 @@ public class GetClaimsQueryHandler : IRequestHandler<GetClaimsQuery, ClaimDto[]>
     {
         _claimsCosmosRepository = claimsCosmosRepository;
     }
-    
+
     public async Task<ClaimDto[]> Handle(GetClaimsQuery request, CancellationToken cancellationToken)
     {
-        var claims = await _claimsCosmosRepository.GetClaimsAsync(request.Take, request.Skip, request.Name, cancellationToken);
+        var claims =
+            await _claimsCosmosRepository.GetClaimsAsync(request.Take, request.Skip, request.Name, cancellationToken);
         return claims.Select(Mappers.ToDto).ToArray();
     }
 }

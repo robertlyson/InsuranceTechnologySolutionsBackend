@@ -6,12 +6,12 @@ namespace Claims.Application.Covers;
 
 public class DeleteCoverCommand : IRequest<Unit>
 {
-    public string Id { get; }
-
     public DeleteCoverCommand(string id)
     {
         Id = id;
     }
+
+    public string Id { get; }
 }
 
 [UsedImplicitly]
@@ -23,7 +23,7 @@ public class DeleteCoverCommandHandler : IRequestHandler<DeleteCoverCommand, Uni
     {
         _repository = repository;
     }
-    
+
     public async Task<Unit> Handle(DeleteCoverCommand request, CancellationToken cancellationToken)
     {
         var id = request.Id;

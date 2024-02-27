@@ -5,12 +5,12 @@ namespace Infrastructure.Claims;
 
 public class DeleteClaimCommand : IRequest<Unit>
 {
-    public string ClaimId { get; }
-
     public DeleteClaimCommand(string claimId)
     {
         ClaimId = claimId;
     }
+
+    public string ClaimId { get; }
 }
 
 [UsedImplicitly]
@@ -22,7 +22,7 @@ public class DeleteClaimCommandHandler : IRequestHandler<DeleteClaimCommand, Uni
     {
         _claimsCosmosRepository = claimsCosmosRepository;
     }
-    
+
     public async Task<Unit> Handle(DeleteClaimCommand request, CancellationToken cancellationToken)
     {
         var id = request.ClaimId;

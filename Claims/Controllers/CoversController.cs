@@ -20,7 +20,7 @@ public class CoversController : ControllerBase
         _mediator = mediator;
         _premiumStrategy = premiumStrategy;
     }
-    
+
     [HttpPost("/premium")]
     public ActionResult ComputePremiumAsync(DateOnly startDate, DateOnly endDate, CoverType coverType)
     {
@@ -28,7 +28,8 @@ public class CoversController : ControllerBase
     }
 
     [HttpGet]
-    public Task<IEnumerable<CoverDto>> GetAsync(int take = 10, int skip = 0, CancellationToken cancellationToken = default)
+    public Task<IEnumerable<CoverDto>> GetAsync(int take = 10, int skip = 0,
+        CancellationToken cancellationToken = default)
     {
         return _mediator.Send(new GetCoversQuery(take, skip), cancellationToken);
     }

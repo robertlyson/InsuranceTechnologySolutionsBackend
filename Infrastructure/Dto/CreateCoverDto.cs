@@ -5,12 +5,9 @@ namespace Infrastructure.Dto;
 
 public class CreateCoverDto
 {
-    [Required] 
-    public DateOnly? StartDate { get; set; }
-    
-    [Required] 
-    public DateOnly? EndDate { get; set; }
-    
-    [Required] 
-    public CoverType? CoverType { get; set; }
+    [Required] public DateOnly? StartDate { get; set; }
+
+    [Required] public DateOnly? EndDate { get; set; }
+
+    [Required] public CoverType? CoverType { get; set; }
 }

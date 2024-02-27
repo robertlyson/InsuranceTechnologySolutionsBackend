@@ -4,16 +4,11 @@ public class Result<T>
 {
     private Result(bool isSuccess, Error error, T? value = default)
     {
-        if (isSuccess && error != Error.None ||
-            !isSuccess && error == Error.None)
-        {
+        if ((isSuccess && error != Error.None) ||
+            (!isSuccess && error == Error.None))
             throw new ArgumentException("Invalid error", nameof(error));
-        }
-        
-        if (isSuccess && value == null)
-        {
-            throw new ArgumentException("Invalid success");
-        }
+
+        if (isSuccess && value == null) throw new ArgumentException("Invalid success");
 
         IsSuccess = isSuccess;
         Error = error;
@@ -27,9 +22,15 @@ public class Result<T>
     public Error Error { get; }
     public T Value { get; }
 
-    public static Result<T> Success(T value) => new(true, Error.None, value);
+    public static Result<T> Success(T value)
+    {
+        return new Result<T>(true, Error.None, value);
+    }
 
-    public static Result<T> Failure(Error error) => new(false, error);
+    public static Result<T> Failure(Error error)
+    {
+        return new Result<T>(false, error);
+    }
 }
 
 public sealed record Error(string Code, string Description)

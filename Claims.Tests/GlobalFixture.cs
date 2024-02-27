@@ -1,19 +1,15 @@
 ﻿using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using NUnit.Framework;
 using Testcontainers.MsSql;
-using VerifyTests.Http;
 
 namespace Claims.Tests;
 
 public class BaseTest
 {
-    protected WebApplicationFactory<Program>? Factory { get; private set; }
     private MsSqlContainer? _msSqlContainer;
+    protected WebApplicationFactory<Program>? Factory { get; private set; }
 
     [OneTimeSetUp]
     public async Task RunBeforeAnyTests()
@@ -48,9 +44,7 @@ public class BaseTest
         var response = await httpClient.GetAsync("/_explorer/index.html");
 
         if (response.StatusCode != HttpStatusCode.OK)
-        {
             throw new Exception("Make sure Azure Cosmos DB emulator is working");
-        }
     }
 
     protected static JsonSerializerOptions SerializerOptions()

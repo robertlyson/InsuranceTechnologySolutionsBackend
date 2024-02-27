@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Net;
+using Domain;
 using Microsoft.Azure.Cosmos;
 
 namespace Infrastructure.Claims;
@@ -15,20 +16,21 @@ public class ClaimsCosmosRepository : IClaimsCosmosRepository
         _container = dbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(int take, int skip, string? name = null, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<ClaimCosmosEntity>> GetClaimsAsync(int take, int skip, string? name = null,
+        CancellationToken cancellationToken = default)
     {
         var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
 
         if (!string.IsNullOrEmpty(name))
-        {
-            queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false AND STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
-                .WithParameter("@name", name)
-                .WithParameter("@limit", take)
-                .WithParameter("@offset", skip);
-        }
-        
+            queryDefinition =
+                new QueryDefinition(
+                        "SELECT * FROM c WHERE c.deleted = false AND STARTSWITH(c.name, @name) OFFSET @offset LIMIT @limit")
+                    .WithParameter("@name", name)
+                    .WithParameter("@limit", take)
+                    .WithParameter("@offset", skip);
+
         var query = _container.GetItemQueryIterator<ClaimCosmosEntity>(queryDefinition);
         var results = new List<ClaimCosmosEntity>();
         while (query.HasMoreResults)
@@ -37,6 +39,7 @@ public class ClaimsCosmosRepository : IClaimsCosmosRepository
 
             results.AddRange(response.ToList());
         }
+
         return results;
     }
 
@@ -44,14 +47,13 @@ public class ClaimsCosmosRepository : IClaimsCosmosRepository
     {
         try
         {
-            var response = await _container.ReadItemAsync<ClaimCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
-            if (response.Resource.Deleted)
-            {
-                return null;
-            }
+            var response =
+                await _container.ReadItemAsync<ClaimCosmosEntity>(id, new PartitionKey(id),
+                    cancellationToken: cancellationToken);
+            if (response.Resource.Deleted) return null;
             return response.Resource;
         }
-        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
         }
@@ -67,7 +69,7 @@ public class ClaimsCosmosRepository : IClaimsCosmosRepository
             Created = item.Created,
             CoverId = item.CoverId,
             Type = item.Type,
-            Deleted = false,
+            Deleted = false
         };
 
         return _container.CreateItemAsync(entity, new PartitionKey(entity.Id), cancellationToken: cancellationToken);
@@ -79,7 +81,8 @@ public class ClaimsCosmosRepository : IClaimsCosmosRepository
         if (entity != null)
         {
             entity.Deleted = true;
-            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions { }, cancellationToken);
+            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions(),
+                cancellationToken);
         }
     }
 }

@@ -6,12 +6,12 @@ namespace Infrastructure.Covers;
 
 public class GetCoverQuery : IRequest<CoverDto?>
 {
-    public string Id { get; }
-
     public GetCoverQuery(string id)
     {
         Id = id;
     }
+
+    public string Id { get; }
 }
 
 [UsedImplicitly]
@@ -23,7 +23,7 @@ public class GetCoverQueryHandler : IRequestHandler<GetCoverQuery, CoverDto?>
     {
         _repository = repository;
     }
-    
+
     public async Task<CoverDto?> Handle(GetCoverQuery request, CancellationToken cancellationToken)
     {
         var cover = await _repository.GetCoverAsync(request.Id, cancellationToken);

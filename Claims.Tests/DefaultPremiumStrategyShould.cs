@@ -42,7 +42,7 @@ public class DefaultPremiumStrategyShould
         var premium = CalculatePremium(new DateTime(2023, 1, 1), new DateTime(2024, 1, 1), type);
         premium.ShouldBe(expected);
     }
-    
+
     private decimal CalculatePremium(DateTime startDate, DateTime endDate, CoverType type)
     {
         var calculator = new DefaultPremiumStrategy();

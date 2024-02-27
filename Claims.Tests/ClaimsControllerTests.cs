@@ -1,211 +1,207 @@
 ﻿using System.Net.Http.Json;
-using Claims.Application.Covers;
 using Domain;
 using Infrastructure.Dto;
 
-namespace Claims.Tests
+namespace Claims.Tests;
+
+[TestFixture]
+public class ClaimsControllerTests : BaseTest
 {
-    [TestFixture]
-    public class ClaimsControllerTests : BaseTest
+    [Test]
+    public async Task Get_Claims()
     {
-        [Test]
-        public async Task Get_Claims()
+        var application = Factory!;
+
+        using var client = application.CreateClient();
+
+        var response = await client.GetAsync("/claims");
+
+        response.EnsureSuccessStatusCode();
+
+        //TODO: Apart from ensuring 200 OK being returned, what else can be asserted?
+    }
+
+    [Test]
+    public async Task GetClaimsWithPaging()
+    {
+        var application = Factory!;
+
+        using var client = application.CreateClient();
+        var cover = await CreateValidCover(client);
+
+        var payload1 = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = DateTime.UtcNow,
+            Name = "paging_1",
+            ClaimType = ClaimType.Fire,
+            DamageCost = decimal.One
+        };
+        await client.PostAsJsonAsync("/claims", payload1);
 
-            using var client = application.CreateClient();
-
-            var response = await client.GetAsync("/claims");
-
-            response.EnsureSuccessStatusCode();
-
-            //TODO: Apart from ensuring 200 OK being returned, what else can be asserted?
-        }
-        
-        [Test]
-        public async Task GetClaimsWithPaging()
+        var payload2 = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = DateTime.UtcNow,
+            Name = "paging_2",
+            ClaimType = ClaimType.Fire,
+            DamageCost = decimal.One
+        };
+        await client.PostAsJsonAsync("/claims", payload2);
+        var response =
+            await client.GetFromJsonAsync<ClaimDto[]>("/claims?take=1&skip=1&name=paging", SerializerOptions());
 
-            using var client = application.CreateClient();
-            var cover = await CreateValidCover(client);
+        await Verify(response);
+    }
 
-            var payload1 = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = DateTime.UtcNow, 
-                Name = "paging_1",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = decimal.One
-            };
-            await client.PostAsJsonAsync("/claims", payload1);
+    [Test]
+    public async Task GetClaim()
+    {
+        var application = Factory!;
 
-            var payload2 = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = DateTime.UtcNow, 
-                Name = "paging_2",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = decimal.One
-            };
-            await client.PostAsJsonAsync("/claims", payload2);
-            var response = await client.GetFromJsonAsync<ClaimDto[]>("/claims?take=1&skip=1&name=paging", SerializerOptions());
+        using var client = application.CreateClient();
 
-            await Verify(response);
-        }
+        var cover = await CreateValidCover(client);
 
-        [Test]
-        public async Task GetClaim()
+        var payload = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = DateTime.UtcNow,
+            Name = "EF3EB3FE-8083-4572-B995-7EAF16F5EC70",
+            ClaimType = ClaimType.Fire,
+            DamageCost = decimal.One
+        };
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
+        var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
+        var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
+        await Verify(getResponse);
+    }
 
-            using var client = application.CreateClient();
-            
-            var cover = await CreateValidCover(client);
+    [Test]
+    public async Task GetNonExistingClaim()
+    {
+        var application = Factory!;
 
-            var payload = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = DateTime.UtcNow, 
-                Name = "EF3EB3FE-8083-4572-B995-7EAF16F5EC70",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = decimal.One
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
-            var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
-            var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
-            await Verify(getResponse);
-        }
+        using var client = application.CreateClient();
 
-        [Test]
-        public async Task GetNonExistingClaim()
+        var getResponse = await client.GetAsync("/claims/non_existing");
+        await Verify(getResponse);
+    }
+
+    [Test]
+    public async Task DeleteClaim()
+    {
+        var application = Factory!;
+
+        using var client = application.CreateClient();
+
+        var cover = await CreateValidCover(client);
+
+        var payload = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = DateTime.UtcNow,
+            Name = "2F2743A9-0D5E-45F1-8134-39487EC6CFE6",
+            ClaimType = ClaimType.Fire,
+            DamageCost = decimal.One
+        };
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
+        var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
+        var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
+        var deleteResponse = await client.DeleteAsync($"/claims/{createdClaim!.Id}");
+        var getDeletedResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
 
-            using var client = application.CreateClient();
-            
-            var getResponse = await client.GetAsync("/claims/non_existing");
-            await Verify(getResponse);
-        }
+        await Verify(new[] { createResponse, getResponse, deleteResponse, getDeletedResponse });
+    }
 
-        [Test]
-        public async Task DeleteClaim()
+    [Test]
+    public async Task ValidateClaimsPost()
+    {
+        var application = Factory!;
+
+        using var client = application.CreateClient();
+
+        var payload = new CreateClaimDto();
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
+
+        await Verify(createResponse);
+    }
+
+    [Test]
+    public async Task CantCreateClaimWithInvalidDamage()
+    {
+        var application = Factory!;
+
+        using var client = application.CreateClient();
+
+        var cover = await CreateValidCover(client);
+
+        var payload = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = DateTime.UtcNow,
+            Name = "A2ED5661-7F81-434E-BDBF-56CF44AA1318",
+            ClaimType = ClaimType.Fire,
+            DamageCost = 100_001
+        };
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
 
-            using var client = application.CreateClient();
-            
-            var cover = await CreateValidCover(client);
+        await Verify(createResponse);
+    }
 
-            var payload = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = DateTime.UtcNow, 
-                Name = "2F2743A9-0D5E-45F1-8134-39487EC6CFE6",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = decimal.One
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
-            var createdClaim = await createResponse.Content.ReadFromJsonAsync<ClaimDto>(SerializerOptions());
-            var getResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
-            var deleteResponse = await client.DeleteAsync($"/claims/{createdClaim!.Id}");
-            var getDeletedResponse = await client.GetAsync($"/claims/{createdClaim!.Id}");
+    [Test]
+    public async Task BadRequestWhenCoverDoesntExist()
+    {
+        var application = Factory!;
 
-            await Verify(new[] { createResponse, getResponse, deleteResponse, getDeletedResponse });
-        }
+        using var client = application.CreateClient();
 
-        [Test]
-        public async Task ValidateClaimsPost()
+        var payload = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = Guid.NewGuid(),
+            Created = DateTime.UtcNow,
+            Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
+            ClaimType = ClaimType.Fire,
+            DamageCost = 100_001
+        };
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
 
-            using var client = application.CreateClient();
+        await Verify(createResponse);
+    }
 
-            var payload = new CreateClaimDto
-            {
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
+    [Test]
+    public async Task CreatedDateMustBeWithinThePeriodOfTheRelatedCover()
+    {
+        var application = Factory!;
 
-            await Verify(createResponse);
-        }
+        using var client = application.CreateClient();
 
-        [Test]
-        public async Task CantCreateClaimWithInvalidDamage()
+        var cover = await CreateValidCover(client);
+
+        var payload = new CreateClaimDto
         {
-            var application = base.Factory!;
+            CoverId = cover.Id,
+            Created = new DateTime(2000, 1, 1),
+            Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
+            ClaimType = ClaimType.Fire,
+            DamageCost = 100
+        };
+        var createResponse = await client.PostAsJsonAsync("/claims", payload);
 
-            using var client = application.CreateClient();
-            
-            var cover = await CreateValidCover(client);
+        await Verify(createResponse);
+    }
 
-            var payload = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = DateTime.UtcNow, 
-                Name = "A2ED5661-7F81-434E-BDBF-56CF44AA1318",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = 100_001,
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
-
-            await Verify(createResponse);
-        }
-
-        [Test]
-        public async Task BadRequestWhenCoverDoesntExist()
+    private static async Task<CoverDto> CreateValidCover(HttpClient client)
+    {
+        var coverPayload = new CreateCoverDto
         {
-            var application = base.Factory!;
-
-            using var client = application.CreateClient();
-
-            var payload = new CreateClaimDto
-            {
-                CoverId = Guid.NewGuid(), 
-                Created = DateTime.UtcNow, 
-                Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = 100_001,
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
-
-            await Verify(createResponse);
-        }
-
-        [Test]
-        public async Task CreatedDateMustBeWithinThePeriodOfTheRelatedCover()
-        {
-            var application = base.Factory!;
-
-            using var client = application.CreateClient();
-            
-            var cover = await CreateValidCover(client);
-
-            var payload = new CreateClaimDto
-            {
-                CoverId = cover.Id, 
-                Created = new DateTime(2000, 1, 1), 
-                Name = "9849F256-63F3-4D2E-8B5A-708A65526B51",
-                ClaimType = ClaimType.Fire, 
-                DamageCost = 100,
-            };
-            var createResponse = await client.PostAsJsonAsync("/claims", payload);
-
-            await Verify(createResponse);
-        }
-
-        private static async Task<CoverDto> CreateValidCover(HttpClient client)
-        {
-            var coverPayload = new CreateCoverDto
-            {
-                CoverType = CoverType.Yacht,
-                StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1)),
-            };
-            var createCoverResponse = await client.PostAsJsonAsync("/covers", coverPayload);
-            var cover = await createCoverResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions()) ?? throw new Exception("Cover could not be created.");
-            return cover;
-        }
+            CoverType = CoverType.Yacht,
+            StartDate = DateOnly.FromDateTime(DateTime.UtcNow),
+            EndDate = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(1))
+        };
+        var createCoverResponse = await client.PostAsJsonAsync("/covers", coverPayload);
+        var cover = await createCoverResponse.Content.ReadFromJsonAsync<CoverDto>(SerializerOptions()) ??
+                    throw new Exception("Cover could not be created.");
+        return cover;
     }
 }
-
-

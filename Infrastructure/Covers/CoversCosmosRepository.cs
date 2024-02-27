@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using System.Net;
+using Domain;
 using Microsoft.Azure.Cosmos;
 
 namespace Infrastructure.Covers;
@@ -6,7 +7,7 @@ namespace Infrastructure.Covers;
 public class CoversCosmosRepository : ICoversCosmosRepository
 {
     private readonly Container _container;
-    
+
     public CoversCosmosRepository(CosmosClient dbClient,
         string databaseName,
         string containerName)
@@ -15,20 +16,22 @@ public class CoversCosmosRepository : ICoversCosmosRepository
         _container = dbClient.GetContainer(databaseName, containerName);
     }
 
-    public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(int take, int skip, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<CoverCosmosEntity>> GetCoversAsync(int take, int skip,
+        CancellationToken cancellationToken = default)
     {
         var queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.deleted = false OFFSET @offset LIMIT @limit")
             .WithParameter("@limit", take)
             .WithParameter("@offset", skip);
         var results = new List<CoverCosmosEntity>();
         var query = _container.GetItemQueryIterator<CoverCosmosEntity>(queryDefinition);
-        
+
         while (query.HasMoreResults)
         {
             var response = await query.ReadNextAsync(cancellationToken);
 
             results.AddRange(response.ToList());
         }
+
         return results;
     }
 
@@ -36,10 +39,12 @@ public class CoversCosmosRepository : ICoversCosmosRepository
     {
         try
         {
-            var response = await _container.ReadItemAsync<CoverCosmosEntity>(id, new PartitionKey(id), cancellationToken: cancellationToken);
+            var response =
+                await _container.ReadItemAsync<CoverCosmosEntity>(id, new PartitionKey(id),
+                    cancellationToken: cancellationToken);
             return response.Resource.Deleted ? null : response.Resource;
         }
-        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
             return null;
         }
@@ -54,10 +59,11 @@ public class CoversCosmosRepository : ICoversCosmosRepository
             EndDate = item.EndDate,
             Type = item.Type,
             Premium = item.Premium,
-            Deleted = false,
+            Deleted = false
         };
-        
-        return _container.CreateItemAsync(entity, new PartitionKey(entity.Id.ToString()), cancellationToken: cancellationToken);
+
+        return _container.CreateItemAsync(entity, new PartitionKey(entity.Id.ToString()),
+            cancellationToken: cancellationToken);
     }
 
     public async Task DeleteItemAsync(string id, CancellationToken cancellationToken = default)
@@ -66,7 +72,8 @@ public class CoversCosmosRepository : ICoversCosmosRepository
         if (entity != null)
         {
             entity.Deleted = true;
-            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions { }, cancellationToken);
+            await _container.UpsertItemAsync(entity, new PartitionKey(id), new PatchItemRequestOptions(),
+                cancellationToken);
         }
     }
 }

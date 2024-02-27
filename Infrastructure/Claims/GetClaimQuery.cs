@@ -6,12 +6,12 @@ namespace Infrastructure.Claims;
 
 public class GetClaimQuery : IRequest<ClaimDto?>
 {
-    public string Id { get; }
-
     public GetClaimQuery(string id)
     {
         Id = id;
     }
+
+    public string Id { get; }
 }
 
 [UsedImplicitly]
@@ -23,7 +23,7 @@ public class GetClaimQueryHandler : IRequestHandler<GetClaimQuery, ClaimDto?>
     {
         _claimsCosmosRepository = claimsCosmosRepository;
     }
-    
+
     public async Task<ClaimDto?> Handle(GetClaimQuery request, CancellationToken cancellationToken)
     {
         var id = request.Id;

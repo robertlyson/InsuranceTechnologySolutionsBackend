@@ -1,38 +1,37 @@
-﻿namespace Infrastructure.Auditing
+﻿namespace Infrastructure.Auditing;
+
+public class Auditer : IAuditer
 {
-    public class Auditer : IAuditer
+    private readonly AuditContext _auditContext;
+
+    public Auditer(AuditContext auditContext)
     {
-        private readonly AuditContext _auditContext;
+        _auditContext = auditContext;
+    }
 
-        public Auditer(AuditContext auditContext)
+    public async Task AuditClaim(string id, string httpRequestType, CancellationToken cancellationToken)
+    {
+        var claimAudit = new ClaimAudit
         {
-            _auditContext = auditContext;
-        }
+            Created = DateTime.UtcNow,
+            HttpRequestType = httpRequestType,
+            ClaimId = id
+        };
 
-        public async Task AuditClaim(string id, string httpRequestType, CancellationToken cancellationToken)
+        _auditContext.Add(claimAudit);
+        await _auditContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task AuditCover(string id, string httpRequestType, CancellationToken cancellationToken)
+    {
+        var coverAudit = new CoverAudit
         {
-            var claimAudit = new ClaimAudit()
-            {
-                Created = DateTime.UtcNow,
-                HttpRequestType = httpRequestType,
-                ClaimId = id
-            };
+            Created = DateTime.UtcNow,
+            HttpRequestType = httpRequestType,
+            CoverId = id
+        };
 
-            _auditContext.Add(claimAudit);
-            await _auditContext.SaveChangesAsync(cancellationToken);
-        }
-        
-        public async Task AuditCover(string id, string httpRequestType, CancellationToken cancellationToken)
-        {
-            var coverAudit = new CoverAudit()
-            {
-                Created = DateTime.UtcNow,
-                HttpRequestType = httpRequestType,
-                CoverId = id
-            };
-
-            _auditContext.Add(coverAudit);
-            await _auditContext.SaveChangesAsync(cancellationToken);
-        }
+        _auditContext.Add(coverAudit);
+        await _auditContext.SaveChangesAsync(cancellationToken);
     }
 }

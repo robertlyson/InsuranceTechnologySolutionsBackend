@@ -17,7 +17,7 @@ public class Mappers
             Name = item.Name
         };
     }
-    
+
     public static ClaimDto ToDto(Claim item)
     {
         return new ClaimDto

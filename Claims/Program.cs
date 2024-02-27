@@ -7,7 +7,6 @@ using Infrastructure.Auditing;
 using Infrastructure.Covers;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,14 +16,16 @@ builder.Services.AddControllers().AddJsonOptions(x =>
     }
 );
 
-builder.Services.AddDbContext<AuditContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<AuditContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddCosmos();
-builder.Services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateCoverCommand).Assembly));
+builder.Services.AddMediatR(configuration =>
+    configuration.RegisterServicesFromAssembly(typeof(CreateCoverCommand).Assembly));
 builder.Services.AddTransient<IPremiumStrategy, DefaultPremiumStrategy>();
 builder.Services.AddAuditing();
 
@@ -44,4 +45,6 @@ app.RunMigrations();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+}

@@ -11,8 +11,8 @@ public class AuditHostedService : IHostedService
 {
     private readonly CosmosClient _cosmosClient;
     private readonly IOptions<CosmosDbOption> _options;
-    private readonly IServiceProvider _provider;
     private readonly List<ChangeFeedProcessor> _processors = new();
+    private readonly IServiceProvider _provider;
 
     public AuditHostedService(CosmosClient cosmosClient, IOptions<CosmosDbOption> options, IServiceProvider provider)
     {
@@ -20,13 +20,14 @@ public class AuditHostedService : IHostedService
         _options = options;
         _provider = provider;
     }
-    
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         var databaseName = _options.Value.DatabaseName;
         var claimsContainerName = _options.Value.ClaimsContainerName;
         var coversContainerName = _options.Value.CoversContainerName;
-        var databaseResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseName, cancellationToken: cancellationToken);
+        var databaseResponse =
+            await _cosmosClient.CreateDatabaseIfNotExistsAsync(databaseName, cancellationToken: cancellationToken);
         var database = databaseResponse.Database;
 
         var claimsProcessor = await BuildProcessor<ClaimCosmosEntity>(database, claimsContainerName,
@@ -36,22 +37,27 @@ public class AuditHostedService : IHostedService
             HandleCoverChanges, cancellationToken);
         _processors.Add(coversProcessor);
 
-        foreach (var feedProcessor in _processors)
-        {
-            await feedProcessor.StartAsync();
-        }
+        foreach (var feedProcessor in _processors) await feedProcessor.StartAsync();
     }
 
-    private async Task<ChangeFeedProcessor> BuildProcessor<T>(Database database, string? containerName, Container.ChangesHandler<T> changesHandler, CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        var sourceContainer = await database.CreateContainerIfNotExistsAsync(containerName, "/id", cancellationToken: cancellationToken);
-        var leaseContainer = await database.CreateContainerIfNotExistsAsync($"{containerName}_lease", "/id", cancellationToken: cancellationToken);
+        foreach (var feedProcessor in _processors) await feedProcessor.StopAsync();
+    }
+
+    private async Task<ChangeFeedProcessor> BuildProcessor<T>(Database database, string? containerName,
+        Container.ChangesHandler<T> changesHandler, CancellationToken cancellationToken)
+    {
+        var sourceContainer =
+            await database.CreateContainerIfNotExistsAsync(containerName, "/id", cancellationToken: cancellationToken);
+        var leaseContainer = await database.CreateContainerIfNotExistsAsync($"{containerName}_lease", "/id",
+            cancellationToken: cancellationToken);
 
         var builder = sourceContainer.Container.GetChangeFeedProcessorBuilder(
-            processorName: $"{containerName}-processor",
-            onChangesDelegate: changesHandler
+            $"{containerName}-processor",
+            changesHandler
         );
-    
+
         return builder
             .WithInstanceName("claimsApp")
             .WithLeaseContainer(leaseContainer)
@@ -62,10 +68,7 @@ public class AuditHostedService : IHostedService
     {
         using var scope = _provider.CreateScope();
         var auditer = scope.ServiceProvider.GetRequiredService<IAuditer>();
-        foreach (var entity in changes)
-        {
-            await auditer.AuditClaim(entity.Id, entity.Deleted ? "DELETE" : "POST", token);
-        }
+        foreach (var entity in changes) await auditer.AuditClaim(entity.Id, entity.Deleted ? "DELETE" : "POST", token);
     }
 
     private async Task HandleCoverChanges(IReadOnlyCollection<CoverCosmosEntity> changes, CancellationToken token)
@@ -73,16 +76,6 @@ public class AuditHostedService : IHostedService
         using var scope = _provider.CreateScope();
         var auditer = scope.ServiceProvider.GetRequiredService<IAuditer>();
         foreach (var entity in changes)
-        {
             await auditer.AuditCover(entity.Id.ToString(), entity.Deleted ? "DELETE" : "POST", token);
-        }
-    }
-
-    public async Task StopAsync(CancellationToken cancellationToken)
-    {
-        foreach (var feedProcessor in _processors)
-        {
-            await feedProcessor.StopAsync();
-        }
     }
 }

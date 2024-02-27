@@ -13,10 +13,10 @@ public static class Mappers
             StartDate = coverCosmosEntity.StartDate,
             EndDate = coverCosmosEntity.EndDate,
             CoverType = coverCosmosEntity.Type,
-            Premium = coverCosmosEntity.Premium,
+            Premium = coverCosmosEntity.Premium
         };
     }
-    
+
     public static CoverDto ToDto(Cover cover)
     {
         return new CoverDto
@@ -25,7 +25,7 @@ public static class Mappers
             StartDate = cover.StartDate,
             EndDate = cover.EndDate,
             CoverType = cover.Type,
-            Premium = cover.Premium,
+            Premium = cover.Premium
         };
     }
 }
